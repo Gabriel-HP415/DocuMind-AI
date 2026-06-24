@@ -1,4 +1,4 @@
-version: "3.9"
+name: documind-ai
 
 services:
   mysql:
@@ -11,12 +11,12 @@ services:
       MYSQL_USER: documind
       MYSQL_PASSWORD: documind
     ports:
-      - "3306:3306"
+      - "3307:3306"
     volumes:
       - mysql_data:/var/lib/mysql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      interval: 5s
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 10s
       timeout: 5s
       retries: 20
 
@@ -29,20 +29,22 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - APP_ENV=production
-      - APP_DEBUG=false
-      - DB_HOST=mysql
-      - DB_PORT=3306
-      - DB_USER=documind
-      - DB_PASSWORD=documind
-      - DB_NAME=documind_ai
-      - OLLAMA_BASE_URL=http://ollama:11434
+      APP_ENV: production
+      APP_DEBUG: "false"
+      DB_HOST: mysql
+      DB_PORT: "3306"
+      DB_USER: documind
+      DB_PASSWORD: documind
+      DB_NAME: documind_ai
+      OLLAMA_BASE_URL: http://ollama:11434
     volumes:
       - ./backend/uploads:/app/uploads
       - ./backend/faiss_index:/app/faiss_index
     depends_on:
       mysql:
         condition: service_healthy
+      ollama:
+        condition: service_started
 
   ollama:
     image: ollama/ollama:latest
@@ -52,8 +54,22 @@ services:
       - "11434:11434"
     volumes:
       - ollama_data:/root/.ollama
-    entrypoint: >
-      sh -c "ollama pull llama3 && ollama serve"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:11434/api/tags >/dev/null 2>&1 || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 20
+
+  ollama-pull:
+    image: ollama/ollama:latest
+    container_name: documind_ollama_pull
+    depends_on:
+      - ollama
+    entrypoint: ["ollama"]
+    command: ["pull", "llama3"]
+    restart: "no"
+    networks:
+      - default
 
 volumes:
   mysql_data:
