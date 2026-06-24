@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DocuMind - Chat with Your PDF Documents</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Geist:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "tertiary-container": "#a44100",
+                        "on-secondary-fixed-variant": "#5a00c6",
+                        "surface-container-highest": "#dae2fd",
+                        "primary-container": "#4f46e5",
+                        "on-tertiary-fixed": "#351000",
+                        "surface-tint": "#4d44e3",
+                        "on-secondary": "#ffffff",
+                        "surface-container": "#eaedff",
+                        "tertiary-fixed": "#ffdbcc",
+                        "on-error-container": "#93000a",
+                        "on-secondary-fixed": "#25005a",
+                        "tertiary-fixed-dim": "#ffb695",
+                        "on-tertiary-container": "#ffd2be",
+                        "surface-dim": "#d2d9f4",
+                        "on-surface-variant": "#464555",
+                        "inverse-surface": "#283044",
+                        "background": "#faf8ff",
+                        "surface-variant": "#dae2fd",
+                        "primary": "#3525cd",
+                        "tertiary": "#7e3000",
+                        "error-container": "#ffdad6",
+                        "on-surface": "#131b2e",
+                        "inverse-on-surface": "#eef0ff",
+                        "inverse-primary": "#c3c0ff",
+                        "primary-fixed-dim": "#c3c0ff",
+                        "on-primary-fixed": "#0f0069",
+                        "outline-variant": "#c7c4d8",
+                        "on-primary-fixed-variant": "#3323cc",
+                        "on-primary": "#ffffff",
+                        "on-background": "#131b2e",
+                        "on-tertiary-fixed-variant": "#7b2f00",
+                        "surface-bright": "#faf8ff",
+                        "surface-container-high": "#e2e7ff",
+                        "error": "#ba1a1a",
+                        "secondary": "#712ae2",
+                        "primary-fixed": "#e2dfff",
+                        "on-secondary-container": "#fffbff",
+                        "secondary-container": "#8a4cfc",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-fixed": "#eaddff",
+                        "outline": "#777587",
+                        "surface": "#faf8ff",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-low": "#f2f3ff",
+                        "on-primary-container": "#dad7ff",
+                        "on-error": "#ffffff",
+                        "secondary-fixed-dim": "#d2bbff"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    spacing: {
+                        "gutter": "24px",
+                        "margin-desktop": "40px",
+                        "container-max": "1280px",
+                        "unit": "8px",
+                        "margin-mobile": "16px"
+                    },
+                    fontFamily: {
+                        "body-sm": ["Inter"],
+                        "label-md": ["Geist"],
+                        "headline-md": ["Inter"],
+                        "display-lg-mobile": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "code-sm": ["Geist"],
+                        "body-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "display-lg": ["Inter"]
+                    },
+                    fontSize: {
+                        "body-sm": ["14px", { lineHeight: "20px", fontWeight: "400" }],
+                        "label-md": ["14px", { lineHeight: "20px", letterSpacing: "0.02em", fontWeight: "500" }],
+                        "headline-md": ["24px", { lineHeight: "32px", fontWeight: "600" }],
+                        "display-lg-mobile": ["36px", { lineHeight: "44px", letterSpacing: "-0.02em", fontWeight: "700" }],
+                        "headline-lg": ["32px", { lineHeight: "40px", letterSpacing: "-0.01em", fontWeight: "600" }],
+                        "code-sm": ["13px", { lineHeight: "18px", fontWeight: "400" }],
+                        "body-lg": ["18px", { lineHeight: "28px", fontWeight: "400" }],
+                        "body-md": ["16px", { lineHeight: "24px", fontWeight: "400" }],
+                        "display-lg": ["48px", { lineHeight: "56px", letterSpacing: "-0.02em", fontWeight: "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .fill-icon {
+            font-variation-settings: 'FILL' 1;
+        }
+        
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(226, 232, 240, 0.5);
+        }
+        
+        .bg-grid-pattern {
+            background-image: linear-gradient(to right, rgba(119, 117, 135, 0.05) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(119, 117, 135, 0.05) 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md antialiased min-h-screen flex flex-col relative overflow-x-hidden">
+<!-- Background Elements -->
+<div class="absolute inset-0 z-0 bg-grid-pattern pointer-events-none"></div>
+<div class="absolute top-0 right-0 w-1/2 h-[500px] bg-gradient-to-bl from-primary-container/10 to-transparent rounded-full blur-[100px] -translate-y-1/2 translate-x-1/4 pointer-events-none z-0"></div>
+<!-- Navigation Bar Placeholder (Suppressed on Landing Page per rules, but adding a simplified brand header) -->
+<header class="w-full h-20 flex items-center px-8 z-50 glass-panel border-b border-outline-variant/30 sticky top-0">
+<div class="max-w-container-max mx-auto w-full flex justify-between items-center">
+<div class="font-headline-md text-headline-md font-bold text-primary flex items-center gap-2">
+<span class="material-symbols-outlined fill-icon text-primary">description</span>
+                DocuMind
+            </div>
+<div class="hidden md:flex gap-6 items-center">
+<a class="font-label-md text-label-md text-on-surface hover:text-primary transition-colors" href="#">Features</a>
+<a class="font-label-md text-label-md text-on-surface hover:text-primary transition-colors" href="#">Pricing</a>
+<a class="font-label-md text-label-md px-4 py-2 rounded-lg bg-surface-container-high hover:bg-surface-variant text-on-surface transition-colors" href="#">Log in</a>
+<a class="font-label-md text-label-md px-4 py-2 rounded-lg bg-gradient-to-r from-primary to-secondary text-on-primary hover:opacity-90 transition-opacity shadow-sm" href="#">Get Started</a>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="flex-grow z-10 w-full">
+<!-- Hero Section -->
+<section class="w-full max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-20 md:py-32 flex flex-col items-center text-center">
+<div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface-container-high text-primary font-label-md text-label-md mb-8 border border-primary/20">
+<span class="material-symbols-outlined text-sm">auto_awesome</span>
+<span>AI-Powered Document Intelligence</span>
+</div>
+<h1 class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg max-w-4xl text-on-surface mb-6 leading-tight">
+                Chat with Your <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">PDF Documents</span>
+</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mb-10">
+                Unlock insights hidden in your documents. Ask questions, extract data, and summarize complex PDFs instantly with advanced AI understanding.
+            </p>
+<div class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+<button class="font-label-md text-label-md px-8 py-4 rounded-xl bg-gradient-to-r from-primary to-secondary text-on-primary shadow-[0_4px_14px_0_rgba(79,70,229,0.39)] hover:shadow-[0_6px_20px_rgba(79,70,229,0.23)] hover:-translate-y-0.5 transition-all duration-200 flex items-center justify-center gap-2">
+                    Get Started Free
+                    <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+<button class="font-label-md text-label-md px-8 py-4 rounded-xl bg-transparent border-2 border-outline-variant text-on-surface-variant hover:border-primary hover:text-primary transition-all duration-200 flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm">upload_file</span>
+                    Upload PDF
+                </button>
+</div>
+<!-- Hero Illustration -->
+<div class="mt-20 w-full max-w-5xl aspect-video rounded-2xl overflow-hidden glass-panel shadow-2xl relative border border-outline-variant/30">
+<div class="absolute top-0 w-full h-8 bg-surface-container-high border-b border-outline-variant/30 flex items-center px-4 gap-2 z-10">
+<div class="w-3 h-3 rounded-full bg-error-container"></div>
+<div class="w-3 h-3 rounded-full bg-tertiary-fixed"></div>
+<div class="w-3 h-3 rounded-full bg-primary-fixed-dim"></div>
+</div>
+<div class="w-full h-full pt-8 relative">
+<img class="w-full h-full object-cover" data-alt="A clean, minimalist 3D illustration of an abstract AI brain scanning and illuminating a stack of floating digital documents. The scene is lit with soft, high-key studio lighting, featuring a bright, modern light-mode aesthetic with a crisp white background. Accents of vibrant indigo and soft purple gradients highlight the data flowing between the documents and the AI core, conveying intelligence, clarity, and advanced technology." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA_c9Sajs_L198RnibIB4wcj6-29j8w-U6A49oODJ3csnSQAYoSSq89WS0OfX_BEzL0vfIaGlkIcKUdNXSfVPVD8N9HjXusqI5_0_uIPU7t5JVyWG3EcVNmcy3RMz2wly6WH4os3gSxjOAF1TMFQUjWLqSD58qJCWnBlZolR07QDtHXm4n_Q1lisxdwGmzrq19rdFaV1zMaH_QOjvvh3dZKGYqGvv6Piht9uMF442SJ7ULjx5meVp_lGKcHjAFFzRiF0o5MX3Ws4wk"/>
+</div>
+</div>
+</section>
+<!-- How It Works Section -->
+<section class="w-full max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-24 border-t border-outline-variant/20 relative">
+<div class="text-center mb-16">
+<h2 class="font-headline-lg text-headline-lg text-on-surface mb-4">How it works</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mx-auto">Three simple steps to unlock the knowledge inside your files.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<!-- Step 1 -->
+<div class="glass-panel p-8 rounded-2xl relative overflow-hidden group hover:shadow-xl transition-shadow duration-300">
+<div class="w-12 h-12 rounded-xl bg-surface-container-high text-primary flex items-center justify-center mb-6">
+<span class="material-symbols-outlined fill-icon text-2xl">upload_file</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-3">1. Upload</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Securely upload your PDF documents. We support research papers, manuals, legal contracts, and more.</p>
+<div class="absolute top-0 right-0 -mr-4 -mt-4 w-24 h-24 bg-primary/5 rounded-full blur-xl group-hover:bg-primary/10 transition-colors"></div>
+</div>
+<!-- Step 2 -->
+<div class="glass-panel p-8 rounded-2xl relative overflow-hidden group hover:shadow-xl transition-shadow duration-300">
+<div class="w-12 h-12 rounded-xl bg-surface-container-high text-primary flex items-center justify-center mb-6">
+<span class="material-symbols-outlined fill-icon text-2xl">document_scanner</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-3">2. Analyze</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Our AI instantly processes the text, charts, and structure of your document, building a comprehensive understanding.</p>
+<div class="absolute top-0 right-0 -mr-4 -mt-4 w-24 h-24 bg-primary/5 rounded-full blur-xl group-hover:bg-primary/10 transition-colors"></div>
+</div>
+<!-- Step 3 -->
+<div class="glass-panel p-8 rounded-2xl relative overflow-hidden group hover:shadow-xl transition-shadow duration-300">
+<div class="w-12 h-12 rounded-xl bg-surface-container-high text-primary flex items-center justify-center mb-6">
+<span class="material-symbols-outlined fill-icon text-2xl">forum</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-3">3. Chat</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Ask questions naturally. Get accurate answers, summaries, and citations directly from your uploaded files.</p>
+<div class="absolute top-0 right-0 -mr-4 -mt-4 w-24 h-24 bg-primary/5 rounded-full blur-xl group-hover:bg-primary/10 transition-colors"></div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer Component from JSON -->
+<footer class="bg-surface-container-lowest dark:bg-surface-dim border-t border-outline-variant w-full py-8 z-10 mt-auto">
+<div class="max-w-container-max mx-auto px-margin-desktop flex flex-col md:flex-row justify-between items-center gap-4">
+<div class="font-headline-md text-headline-md font-bold text-primary flex items-center gap-2">
+<span class="material-symbols-outlined fill-icon">description</span>
+                DocuMind
+            </div>
+<div class="text-on-surface-variant dark:text-surface-variant font-body-sm text-body-sm">
+                © 2024 DocuMind AI. All rights reserved.
+            </div>
+<nav class="flex gap-6">
+<a class="text-on-surface-variant font-body-sm text-body-sm hover:text-primary underline-offset-4 hover:underline transition-opacity duration-200" href="#">Privacy Policy</a>
+<a class="text-on-surface-variant font-body-sm text-body-sm hover:text-primary underline-offset-4 hover:underline transition-opacity duration-200" href="#">Terms of Service</a>
+<a class="text-on-surface-variant font-body-sm text-body-sm hover:text-primary underline-offset-4 hover:underline transition-opacity duration-200" href="#">Help Center</a>
+</nav>
+</div>
+</footer>
+</body></html>

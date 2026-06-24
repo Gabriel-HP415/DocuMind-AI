@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DocuMind - Chat</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=Geist:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "tertiary-container": "#a44100",
+                      "on-secondary-fixed-variant": "#5a00c6",
+                      "surface-container-highest": "#dae2fd",
+                      "primary-container": "#4f46e5",
+                      "on-tertiary-fixed": "#351000",
+                      "surface-tint": "#4d44e3",
+                      "on-secondary": "#ffffff",
+                      "surface-container": "#eaedff",
+                      "tertiary-fixed": "#ffdbcc",
+                      "on-error-container": "#93000a",
+                      "on-secondary-fixed": "#25005a",
+                      "tertiary-fixed-dim": "#ffb695",
+                      "on-tertiary-container": "#ffd2be",
+                      "surface-dim": "#d2d9f4",
+                      "on-surface-variant": "#464555",
+                      "inverse-surface": "#283044",
+                      "background": "#faf8ff",
+                      "surface-variant": "#dae2fd",
+                      "primary": "#3525cd",
+                      "tertiary": "#7e3000",
+                      "error-container": "#ffdad6",
+                      "on-surface": "#131b2e",
+                      "inverse-on-surface": "#eef0ff",
+                      "inverse-primary": "#c3c0ff",
+                      "primary-fixed-dim": "#c3c0ff",
+                      "on-primary-fixed": "#0f0069",
+                      "outline-variant": "#c7c4d8",
+                      "on-primary-fixed-variant": "#3323cc",
+                      "on-primary": "#ffffff",
+                      "on-background": "#131b2e",
+                      "on-tertiary-fixed-variant": "#7b2f00",
+                      "surface-bright": "#faf8ff",
+                      "surface-container-high": "#e2e7ff",
+                      "error": "#ba1a1a",
+                      "secondary": "#712ae2",
+                      "primary-fixed": "#e2dfff",
+                      "on-secondary-container": "#fffbff",
+                      "secondary-container": "#8a4cfc",
+                      "surface-container-lowest": "#ffffff",
+                      "secondary-fixed": "#eaddff",
+                      "outline": "#777587",
+                      "surface": "#faf8ff",
+                      "on-tertiary": "#ffffff",
+                      "surface-container-low": "#f2f3ff",
+                      "on-primary-container": "#dad7ff",
+                      "on-error": "#ffffff",
+                      "secondary-fixed-dim": "#d2bbff"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "gutter": "24px",
+                      "margin-desktop": "40px",
+                      "container-max": "1280px",
+                      "unit": "8px",
+                      "margin-mobile": "16px"
+              },
+              "fontFamily": {
+                      "body-sm": [
+                              "Inter"
+                      ],
+                      "label-md": [
+                              "Geist"
+                      ],
+                      "headline-md": [
+                              "Inter"
+                      ],
+                      "display-lg-mobile": [
+                              "Inter"
+                      ],
+                      "headline-lg": [
+                              "Inter"
+                      ],
+                      "code-sm": [
+                              "Geist"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "display-lg": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "body-sm": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "letterSpacing": "0.02em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "display-lg-mobile": [
+                              "36px",
+                              {
+                                      "lineHeight": "44px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "code-sm": [
+                              "13px",
+                              {
+                                      "lineHeight": "18px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "display-lg": [
+                              "48px",
+                              {
+                                      "lineHeight": "56px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        .ai-message-gradient {
+            background: linear-gradient(135deg, rgba(234, 237, 255, 0.5) 0%, rgba(255, 255, 255, 0.9) 100%);
+            border: 1px solid rgba(199, 196, 216, 0.5);
+        }
+        .user-message-bg {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background-color: #c7c4d8;
+            border-radius: 20px;
+        }
+      </style>
+</head>
+<body class="bg-background text-on-background font-body-md text-body-md h-screen overflow-hidden flex">
+<!-- Global Nav SideNavBar (from JSON) -->
+<nav class="hidden md:flex flex-col h-full py-6 px-4 bg-surface-container-low dark:bg-inverse-surface border-r border-outline-variant dark:border-outline fixed h-full w-[280px] left-0 top-0 shadow-sm z-50">
+<div class="mb-8 px-4">
+<h1 class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed flex items-center gap-2">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">description</span>
+                DocuMind
+            </h1>
+<p class="text-on-surface-variant font-body-sm text-body-sm mt-1">AI PDF Assistant</p>
+</div>
+<ul class="flex flex-col gap-2 flex-grow">
+<li>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant dark:text-surface-variant hover:text-primary hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant dark:text-surface-variant hover:text-primary hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors" href="#">
+<span class="material-symbols-outlined">description</span>
+<span class="font-label-md text-label-md">My Documents</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-primary dark:text-inverse-primary font-bold bg-primary-container/20 dark:bg-primary-container/40 Active: scale-95 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">history</span>
+<span class="font-label-md text-label-md">Chat History</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant dark:text-surface-variant hover:text-primary hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+</li>
+</ul>
+<div class="mt-auto border-t border-outline-variant/30 pt-4">
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant dark:text-surface-variant hover:text-primary hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors" href="#">
+<span class="material-symbols-outlined">account_circle</span>
+<span class="font-label-md text-label-md">Profile</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="flex-1 ml-0 md:ml-[280px] flex flex-col h-full relative">
+<!-- TopAppBar (from JSON, modified for chat context) -->
+<header class="flex items-center justify-between px-8 gap-4 bg-surface/80 dark:bg-surface-dim/80 backdrop-blur-xl border-b border-outline-variant/50 fixed top-0 right-0 w-[calc(100%-280px)] h-16 shadow-sm z-40 hidden md:flex">
+<div class="flex-1 max-w-md">
+<!-- Hidden search bar for this view, focus is on doc -->
+</div>
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant hover:text-primary transition-all p-2 rounded-full hover:bg-surface-container-high">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<img alt="User Avatar" class="w-8 h-8 rounded-full object-cover border border-outline-variant/30" data-alt="A small, professional user avatar portrait. The image features a clear, well-lit headshot of a person against a neutral, bright white background, conveying a sense of refined professionalism and approachability suitable for an AI document assistant platform. Soft, even lighting highlights the subject's features subtly without harsh shadows." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCKhLqiUooPGC33U_kNmXRJIhL9itMEXvx6Jfhj3a7W0EpLOSOkmbJUYtEOsbhZIsjw_oUZyARs5K9ixKpebVWO-6epb1FxucXaILu17XeQVE3nu36cv5Dt76JaDOW3IgfT7zfpm_D3ru-NepQx3IPW6LGhGTQ0Ow-lD1KtX4mHvNZXVIlTm8r6H8ODuOXhusI1QLF1D34cuYfYmjRcDCoffHYJ8gMPTE01iRsp5_IFXUqH1M2jatWz7pPtjTQWERGlYMPcJCUQSIs"/>
+</div>
+</header>
+<!-- Document & Chat Layout -->
+<div class="flex flex-1 pt-16 h-full overflow-hidden">
+<!-- Context Sidebar (Document Focus) -->
+<aside class="hidden lg:flex flex-col w-[300px] border-r border-outline-variant/50 bg-surface-bright overflow-y-auto custom-scrollbar p-6">
+<div class="mb-6">
+<span class="inline-block px-2 py-1 bg-surface-container-highest text-primary font-code-sm text-code-sm rounded mb-2">PDF Context</span>
+<h2 class="font-headline-md text-headline-md text-on-surface flex items-start gap-2">
+<span class="material-symbols-outlined text-primary mt-1">menu_book</span>
+                        Quantum Physics.pdf
+                    </h2>
+<p class="text-on-surface-variant font-body-sm text-body-sm mt-2 flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">info</span> 42 pages • 1.2MB
+                    </p>
+</div>
+<h3 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider mb-4">Table of Contents</h3>
+<nav class="flex flex-col gap-1">
+<a class="px-3 py-2 rounded-lg hover:bg-surface-container-high text-on-surface font-body-sm text-body-sm transition-colors border-l-2 border-transparent hover:border-primary" href="#">1. Introduction to Quantum Mechanics</a>
+<a class="px-3 py-2 rounded-lg bg-primary-container/10 text-primary font-body-sm text-body-sm transition-colors border-l-2 border-primary" href="#">2. Wave-Particle Duality</a>
+<a class="px-3 py-2 rounded-lg hover:bg-surface-container-high text-on-surface font-body-sm text-body-sm transition-colors border-l-2 border-transparent hover:border-primary pl-6" href="#">2.1 The Double-Slit Experiment</a>
+<a class="px-3 py-2 rounded-lg hover:bg-surface-container-high text-on-surface font-body-sm text-body-sm transition-colors border-l-2 border-transparent hover:border-primary pl-6" href="#">2.2 De Broglie Hypothesis</a>
+<a class="px-3 py-2 rounded-lg hover:bg-surface-container-high text-on-surface font-body-sm text-body-sm transition-colors border-l-2 border-transparent hover:border-primary" href="#">3. The Schrödinger Equation</a>
+<a class="px-3 py-2 rounded-lg hover:bg-surface-container-high text-on-surface font-body-sm text-body-sm transition-colors border-l-2 border-transparent hover:border-primary" href="#">4. Quantum Entanglement</a>
+</nav>
+</aside>
+<!-- Chat Canvas -->
+<section class="flex-1 flex flex-col relative bg-background">
+<!-- Chat Scroll Area -->
+<div class="flex-1 overflow-y-auto custom-scrollbar p-6 lg:p-8 flex flex-col gap-8 pb-32">
+<!-- Welcome/Empty State -->
+<div class="flex flex-col items-center justify-center py-12 text-center max-w-lg mx-auto opacity-70">
+<div class="w-16 h-16 rounded-2xl bg-surface-container-high flex items-center justify-center mb-4 shadow-sm">
+<span class="material-symbols-outlined text-primary text-3xl">auto_awesome</span>
+</div>
+<h3 class="font-headline-lg text-headline-lg text-on-surface mb-2">Ready to explore</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">I've read "Quantum Physics.pdf". What would you like to know?</p>
+</div>
+<!-- User Message -->
+<div class="flex gap-4 justify-end">
+<div class="max-w-[80%] md:max-w-[70%]">
+<div class="user-message-bg p-4 rounded-2xl rounded-tr-sm shadow-sm">
+<p class="font-body-md text-body-md text-on-surface">Can you explain the double-slit experiment simply?</p>
+</div>
+<span class="text-[11px] text-on-surface-variant/60 block text-right mt-1">10:42 AM</span>
+</div>
+<div class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-primary text-sm">person</span>
+</div>
+</div>
+<!-- AI Response -->
+<div class="flex gap-4 justify-start">
+<div class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center flex-shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-on-primary text-sm">smart_toy</span>
+</div>
+<div class="max-w-[85%] md:max-w-[75%]">
+<div class="ai-message-gradient p-5 rounded-2xl rounded-tl-sm shadow-sm backdrop-blur-sm">
+<p class="font-body-md text-body-md text-on-surface mb-4 leading-relaxed">
+                                    The double-slit experiment is a demonstration that light and matter can display characteristics of both classically defined waves and particles. 
+                                </p>
+<p class="font-body-md text-body-md text-on-surface mb-4 leading-relaxed">
+                                    Imagine firing marbles through two narrow slits in a wall. You'd expect them to hit a screen behind the wall in two distinct bands. However, when we fire tiny particles like electrons (or photons of light) through the slits, they don't form two bands. Instead, they form an interference pattern—many bands of varying intensity. This pattern only makes sense if the particles are acting like waves, interfering with each other.
+                                </p>
+<!-- Citation Card -->
+<div class="mt-4 bg-surface-container-lowest border border-outline-variant/40 rounded-xl p-3 flex gap-3 items-start shadow-sm hover:shadow-md transition-shadow cursor-pointer group">
+<div class="bg-primary-container/10 p-2 rounded-lg text-primary">
+<span class="material-symbols-outlined text-sm">find_in_page</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface group-hover:text-primary transition-colors">Source: Page 14, Paragraph 2</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2 mt-1">"The phenomenon of interference observed in the double-slit apparatus provides the foundational empirical basis for wave-particle duality in quantum mechanics..."</p>
+</div>
+</div>
+</div>
+<div class="flex gap-2 mt-2 ml-1">
+<button class="text-on-surface-variant/60 hover:text-primary transition-colors p-1"><span class="material-symbols-outlined text-[18px]">thumb_up</span></button>
+<button class="text-on-surface-variant/60 hover:text-primary transition-colors p-1"><span class="material-symbols-outlined text-[18px]">thumb_down</span></button>
+<button class="text-on-surface-variant/60 hover:text-primary transition-colors p-1"><span class="material-symbols-outlined text-[18px]">content_copy</span></button>
+</div>
+</div>
+</div>
+</div>
+<!-- Input Area (Fixed Bottom) -->
+<div class="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-background via-background to-transparent pt-12">
+<div class="max-w-4xl mx-auto">
+<!-- Suggested Questions -->
+<div class="flex gap-2 mb-3 overflow-x-auto custom-scrollbar pb-2">
+<button class="whitespace-nowrap px-4 py-1.5 rounded-full bg-surface-container-lowest border border-outline-variant hover:border-primary text-primary font-body-sm text-body-sm shadow-sm transition-all hover:shadow">
+                                What is Schrödinger's cat?
+                            </button>
+<button class="whitespace-nowrap px-4 py-1.5 rounded-full bg-surface-container-lowest border border-outline-variant hover:border-primary text-primary font-body-sm text-body-sm shadow-sm transition-all hover:shadow">
+                                Summarize Chapter 4
+                            </button>
+<button class="whitespace-nowrap px-4 py-1.5 rounded-full bg-surface-container-lowest border border-outline-variant hover:border-primary text-primary font-body-sm text-body-sm shadow-sm transition-all hover:shadow">
+                                Define superposition
+                            </button>
+</div>
+<!-- Input Field -->
+<div class="relative bg-surface-container-lowest rounded-2xl border border-outline-variant shadow-sm focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary transition-all overflow-hidden flex items-end">
+<button class="p-4 text-outline hover:text-primary transition-colors">
+<span class="material-symbols-outlined">attach_file</span>
+</button>
+<textarea class="flex-1 bg-transparent border-none focus:ring-0 resize-none py-4 font-body-md text-body-md text-on-surface placeholder-on-surface-variant/50 max-h-32 custom-scrollbar" placeholder="Ask anything about this document..." rows="1" style="min-height: 56px;"></textarea>
+<button class="p-3 m-1 bg-primary text-on-primary rounded-xl hover:bg-surface-tint transition-colors shadow-sm flex items-center justify-center">
+<span class="material-symbols-outlined text-sm">send</span>
+</button>
+</div>
+<div class="text-center mt-2">
+<span class="font-code-sm text-code-sm text-on-surface-variant/60">AI can make mistakes. Consider verifying important information.</span>
+</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+</body></html>

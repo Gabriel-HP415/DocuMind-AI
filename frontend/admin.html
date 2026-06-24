@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DocuMind Admin Analytics</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=Geist:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-container": "#a44100",
+                        "on-secondary-fixed-variant": "#5a00c6",
+                        "surface-container-highest": "#dae2fd",
+                        "primary-container": "#4f46e5",
+                        "on-tertiary-fixed": "#351000",
+                        "surface-tint": "#4d44e3",
+                        "on-secondary": "#ffffff",
+                        "surface-container": "#eaedff",
+                        "tertiary-fixed": "#ffdbcc",
+                        "on-error-container": "#93000a",
+                        "on-secondary-fixed": "#25005a",
+                        "tertiary-fixed-dim": "#ffb695",
+                        "on-tertiary-container": "#ffd2be",
+                        "surface-dim": "#d2d9f4",
+                        "on-surface-variant": "#464555",
+                        "inverse-surface": "#283044",
+                        "background": "#faf8ff",
+                        "surface-variant": "#dae2fd",
+                        "primary": "#3525cd",
+                        "tertiary": "#7e3000",
+                        "error-container": "#ffdad6",
+                        "on-surface": "#131b2e",
+                        "inverse-on-surface": "#eef0ff",
+                        "inverse-primary": "#c3c0ff",
+                        "primary-fixed-dim": "#c3c0ff",
+                        "on-primary-fixed": "#0f0069",
+                        "outline-variant": "#c7c4d8",
+                        "on-primary-fixed-variant": "#3323cc",
+                        "on-primary": "#ffffff",
+                        "on-background": "#131b2e",
+                        "on-tertiary-fixed-variant": "#7b2f00",
+                        "surface-bright": "#faf8ff",
+                        "surface-container-high": "#e2e7ff",
+                        "error": "#ba1a1a",
+                        "secondary": "#712ae2",
+                        "primary-fixed": "#e2dfff",
+                        "on-secondary-container": "#fffbff",
+                        "secondary-container": "#8a4cfc",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-fixed": "#eaddff",
+                        "outline": "#777587",
+                        "surface": "#faf8ff",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-low": "#f2f3ff",
+                        "on-primary-container": "#dad7ff",
+                        "on-error": "#ffffff",
+                        "secondary-fixed-dim": "#d2bbff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "24px",
+                        "margin-desktop": "40px",
+                        "container-max": "1280px",
+                        "unit": "8px",
+                        "margin-mobile": "16px"
+                    },
+                    "fontFamily": {
+                        "body-sm": ["Inter"],
+                        "label-md": ["Geist"],
+                        "headline-md": ["Inter"],
+                        "display-lg-mobile": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "code-sm": ["Geist"],
+                        "body-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "display-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "display-lg-mobile": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "code-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid theme('colors.outline-variant' / 50%);
+        }
+        .bento-card {
+            background: theme('colors.surface-container-lowest');
+            border: 1px solid theme('colors.outline-variant');
+            transition: all 0.2s ease-in-out;
+        }
+        .bento-card:hover {
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen font-body-md text-body-md overflow-x-hidden flex">
+<!-- SideNavBar -->
+<nav class="bg-surface-container-low dark:bg-inverse-surface fixed h-full w-[280px] left-0 top-0 border-r border-outline-variant dark:border-outline shadow-sm flex flex-col py-6 px-4 z-20 hidden md:flex">
+<div class="flex items-center gap-3 mb-8 px-2">
+<div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-on-primary font-bold">D</div>
+<div>
+<h1 class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed">DocuMind</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant">AI PDF Assistant</p>
+</div>
+</div>
+<ul class="flex-1 flex flex-col gap-2 font-body-md text-body-md">
+<li>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant dark:text-surface-variant hover:text-primary hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors active:scale-95 duration-150 group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary transition-colors">dashboard</span>
+                    Dashboard
+                </a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant dark:text-surface-variant hover:text-primary hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors active:scale-95 duration-150 group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary transition-colors">description</span>
+                    My Documents
+                </a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant dark:text-surface-variant hover:text-primary hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors active:scale-95 duration-150 group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary transition-colors">history</span>
+                    Chat History
+                </a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-primary dark:text-inverse-primary font-bold bg-primary-container/20 dark:bg-primary-container/40 active:scale-95 duration-150 group" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">settings</span>
+                    Settings
+                </a>
+</li>
+</ul>
+<div class="mt-auto border-t border-outline-variant/50 pt-4">
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant dark:text-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors group" href="#">
+<img class="w-8 h-8 rounded-full object-cover" data-alt="A small, professional headshot photo of an administrator or user, isolated on a light background, suitable for a dashboard avatar. High quality, well-lit." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBxJBhj_bb-MjS_0M7DAwmZ7y_pRmJ-ic6cPnnxG7FfbYKLYO4ingEFLW4pNrtdM2l71EJA8MU5lu7cOgWnh8s-J1pDvwIz_Ah1npw_htar-zj5BOfbiuk6nlmVag4ndOE7F_6eW1ocvqSwlQp2rVjs7Cak89kDMT8bNT7ScWfV2Ogi0nDVdbrikMKfDlAbClBkXxy6DNKnaq4tTh-bwAwS4kJOgHaINWgBobaykZOq7P4W_DzN3DrsBlmql1P9sVPco36A04wBThc"/>
+<span>Profile</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<div class="flex-1 flex flex-col md:ml-[280px] w-full min-h-screen">
+<!-- TopNavBar -->
+<header class="bg-surface/80 dark:bg-surface-dim/80 fixed top-0 right-0 w-full md:w-[calc(100%-280px)] h-16 backdrop-blur-xl border-b border-outline-variant/50 shadow-sm flex items-center justify-between px-4 md:px-8 gap-4 z-10 font-body-sm text-body-sm">
+<div class="flex items-center gap-4 w-full max-w-md focus-within:ring-2 focus-within:ring-primary/20 rounded-full px-4 py-2 bg-surface-container-low border border-outline-variant/30">
+<span class="material-symbols-outlined text-on-surface-variant">search</span>
+<input class="bg-transparent border-none focus:ring-0 w-full text-on-surface placeholder:text-on-surface-variant/50 font-body-sm" placeholder="Search analytics..." type="text"/>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant hover:text-primary dark:hover:text-inverse-primary transition-all p-2 rounded-full hover:bg-surface-container-high">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<div class="w-8 h-8 rounded-full overflow-hidden border border-outline-variant">
+<img class="w-full h-full object-cover" data-alt="Another variation of a professional user avatar headshot, close up, soft lighting, neutral background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD8DeLIHu0XlWBIb1GUrT1sZaFON2Gb-X0KBT2w0jValFsUG2Ho5efFE69oEjjs3gJRmC6JWVj4YWtqp7_uORAe6_5gZ8h-B-TtoAa6_VUiilb9KebablGAzO43pKlLX7m8mwEYSwnYA6y2s1FBKbSZxRsPXTSn9S71_DdNMn0xzaFBEXClpfDEzOFmnf7_2zkVIzVFNh5lWz2l00IamTRdUUWk71bDqw4_Ve6QRsAcZ4EU65r1S6LkGvIRKLEaBrpjrPCS46XP8f8"/>
+</div>
+</div>
+</header>
+<!-- Main Canvas -->
+<main class="flex-1 p-margin-mobile md:p-margin-desktop mt-16 max-w-container-max mx-auto w-full">
+<header class="mb-8">
+<h2 class="font-headline-lg text-headline-lg md:text-display-lg text-on-surface">Platform Analytics</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-2">Comprehensive overview of system usage and performance.</p>
+</header>
+<!-- Stats Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter mb-gutter">
+<!-- Stat 1 -->
+<div class="bento-card rounded-xl p-6 flex flex-col relative overflow-hidden">
+<div class="absolute top-0 right-0 p-4 opacity-10">
+<span class="material-symbols-outlined text-6xl text-primary">group</span>
+</div>
+<p class="font-label-md text-label-md text-on-surface-variant mb-2">Total Users</p>
+<h3 class="font-display-lg-mobile text-display-lg-mobile text-on-surface mt-auto">12.4k</h3>
+<div class="flex items-center gap-1 mt-2 text-primary font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-sm">trending_up</span>
+<span>+12% this month</span>
+</div>
+</div>
+<!-- Stat 2 -->
+<div class="bento-card rounded-xl p-6 flex flex-col relative overflow-hidden">
+<div class="absolute top-0 right-0 p-4 opacity-10">
+<span class="material-symbols-outlined text-6xl text-primary">description</span>
+</div>
+<p class="font-label-md text-label-md text-on-surface-variant mb-2">Total PDFs</p>
+<h3 class="font-display-lg-mobile text-display-lg-mobile text-on-surface mt-auto">45.2k</h3>
+<div class="flex items-center gap-1 mt-2 text-primary font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-sm">trending_up</span>
+<span>+8% this month</span>
+</div>
+</div>
+<!-- Stat 3 -->
+<div class="bento-card rounded-xl p-6 flex flex-col relative overflow-hidden">
+<div class="absolute top-0 right-0 p-4 opacity-10">
+<span class="material-symbols-outlined text-6xl text-primary">forum</span>
+</div>
+<p class="font-label-md text-label-md text-on-surface-variant mb-2">Total Questions</p>
+<h3 class="font-display-lg-mobile text-display-lg-mobile text-on-surface mt-auto">128k</h3>
+<div class="flex items-center gap-1 mt-2 text-primary font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-sm">trending_up</span>
+<span>+24% this month</span>
+</div>
+</div>
+<!-- Stat 4 -->
+<div class="bento-card rounded-xl p-6 flex flex-col relative overflow-hidden">
+<div class="absolute top-0 right-0 p-4 opacity-10">
+<span class="material-symbols-outlined text-6xl text-primary">timer</span>
+</div>
+<p class="font-label-md text-label-md text-on-surface-variant mb-2">Avg. Response Time</p>
+<h3 class="font-display-lg-mobile text-display-lg-mobile text-on-surface mt-auto">1.2s</h3>
+<div class="flex items-center gap-1 mt-2 text-secondary font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-sm">trending_down</span>
+<span>-0.3s from last week</span>
+</div>
+</div>
+</div>
+<!-- Chart Area -->
+<div class="bento-card rounded-xl p-6 mb-gutter">
+<div class="flex justify-between items-center mb-6">
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface">Usage Trends</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Questions asked over the last 30 days</p>
+</div>
+<button class="flex items-center gap-2 px-4 py-2 border border-outline-variant rounded-lg font-label-md text-label-md hover:border-primary text-on-surface transition-colors">
+<span>Last 30 Days</span>
+<span class="material-symbols-outlined text-sm">expand_more</span>
+</button>
+</div>
+<div class="w-full h-80 relative">
+<canvas id="usageChart"></canvas>
+</div>
+</div>
+<!-- Table Area -->
+<div class="bento-card rounded-xl p-6 overflow-hidden">
+<div class="flex justify-between items-center mb-6">
+<h3 class="font-headline-md text-headline-md text-on-surface">Popular Documents</h3>
+<button class="text-primary hover:text-secondary font-label-md text-label-md transition-colors">View All</button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-outline-variant font-label-md text-label-md text-on-surface-variant">
+<th class="pb-4 pl-2 font-medium">Document Name</th>
+<th class="pb-4 font-medium text-right">Uploads / Views</th>
+<th class="pb-4 font-medium text-right">Questions Asked</th>
+<th class="pb-4 pr-2 font-medium text-right">Trend</th>
+</tr>
+</thead>
+<tbody class="font-body-md text-body-md text-on-surface">
+<tr class="border-b border-outline-variant/50 hover:bg-surface-container-low transition-colors group">
+<td class="py-4 pl-2 flex items-center gap-3">
+<div class="w-10 h-10 rounded bg-primary-container/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">description</span>
+</div>
+<span class="font-medium">Q3_Financial_Report_Final.pdf</span>
+</td>
+<td class="py-4 text-right text-on-surface-variant">1,245</td>
+<td class="py-4 text-right">8,432</td>
+<td class="py-4 pr-2 text-right">
+<span class="inline-flex items-center px-2 py-1 rounded-full bg-surface-container-highest text-primary font-label-md text-xs">
+<span class="material-symbols-outlined text-xs mr-1">trending_up</span> High
+                                    </span>
+</td>
+</tr>
+<tr class="border-b border-outline-variant/50 hover:bg-surface-container-low transition-colors">
+<td class="py-4 pl-2 flex items-center gap-3">
+<div class="w-10 h-10 rounded bg-primary-container/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">menu_book</span>
+</div>
+<span class="font-medium">Employee_Handbook_2024.pdf</span>
+</td>
+<td class="py-4 text-right text-on-surface-variant">890</td>
+<td class="py-4 text-right">5,112</td>
+<td class="py-4 pr-2 text-right">
+<span class="inline-flex items-center px-2 py-1 rounded-full bg-surface-container-highest text-primary font-label-md text-xs">
+<span class="material-symbols-outlined text-xs mr-1">trending_up</span> High
+                                    </span>
+</td>
+</tr>
+<tr class="border-b border-outline-variant/50 hover:bg-surface-container-low transition-colors">
+<td class="py-4 pl-2 flex items-center gap-3">
+<div class="w-10 h-10 rounded bg-primary-container/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">policy</span>
+</div>
+<span class="font-medium">Security_Compliance_Guidelines.pdf</span>
+</td>
+<td class="py-4 text-right text-on-surface-variant">456</td>
+<td class="py-4 text-right">2,890</td>
+<td class="py-4 pr-2 text-right">
+<span class="inline-flex items-center px-2 py-1 rounded-full bg-surface-variant text-on-surface-variant font-label-md text-xs">
+<span class="material-symbols-outlined text-xs mr-1">trending_flat</span> Stable
+                                    </span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="py-4 pl-2 flex items-center gap-3">
+<div class="w-10 h-10 rounded bg-primary-container/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">science</span>
+</div>
+<span class="font-medium">API_Documentation_v2.pdf</span>
+</td>
+<td class="py-4 text-right text-on-surface-variant">312</td>
+<td class="py-4 text-right">1,540</td>
+<td class="py-4 pr-2 text-right">
+<span class="inline-flex items-center px-2 py-1 rounded-full bg-surface-variant text-on-surface-variant font-label-md text-xs">
+<span class="material-symbols-outlined text-xs mr-1">trending_flat</span> Stable
+                                    </span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-lowest dark:bg-surface-dim border-t border-outline-variant py-8 font-body-sm text-body-sm text-on-surface-variant w-full">
+<div class="max-w-container-max mx-auto px-margin-desktop flex flex-col md:flex-row justify-between items-center gap-4">
+<p class="font-headline-md text-headline-md font-bold text-primary">DocuMind</p>
+<p>© 2024 DocuMind AI. All rights reserved.</p>
+<div class="flex gap-6">
+<a class="hover:text-primary underline-offset-4 hover:underline transition-opacity duration-200" href="#">Privacy Policy</a>
+<a class="hover:text-primary underline-offset-4 hover:underline transition-opacity duration-200" href="#">Terms of Service</a>
+<a class="hover:text-primary underline-offset-4 hover:underline transition-opacity duration-200" href="#">Help Center</a>
+</div>
+</div>
+</footer>
+</div>
+<!-- Chart.js Initialization -->
+<script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const ctx = document.getElementById('usageChart').getContext('2d');
+            
+            // Create gradient
+            let gradient = ctx.createLinearGradient(0, 0, 0, 400);
+            gradient.addColorStop(0, 'rgba(53, 37, 205, 0.5)'); // primary color with opacity
+            gradient.addColorStop(1, 'rgba(53, 37, 205, 0.0)');
+
+            // Sample data for 30 days
+            const labels = Array.from({length: 30}, (_, i) => `Day ${i+1}`);
+            const data = Array.from({length: 30}, () => Math.floor(Math.random() * 5000) + 2000);
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Questions Asked',
+                        data: data,
+                        borderColor: '#3525cd', // primary color
+                        backgroundColor: gradient,
+                        borderWidth: 2,
+                        pointBackgroundColor: '#ffffff',
+                        pointBorderColor: '#3525cd',
+                        pointBorderWidth: 2,
+                        pointRadius: 3,
+                        pointHoverRadius: 6,
+                        fill: true,
+                        tension: 0.4 // smooth curves
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: '#131b2e',
+                            titleFont: { family: 'Inter', size: 13 },
+                            bodyFont: { family: 'Inter', size: 14, weight: 'bold' },
+                            padding: 12,
+                            displayColors: false,
+                            callbacks: {
+                                label: function(context) {
+                                    return context.parsed.y.toLocaleString() + ' questions';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: '#e2e8f0', // soft outline
+                                drawBorder: false,
+                            },
+                            ticks: {
+                                font: { family: 'Inter', size: 12 },
+                                color: '#464555' // on-surface-variant
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false,
+                                drawBorder: false
+                            },
+                            ticks: {
+                                font: { family: 'Inter', size: 12 },
+                                color: '#464555',
+                                maxTicksLimit: 7
+                            }
+                        }
+                    },
+                    interaction: {
+                        intersect: false,
+                        mode: 'index',
+                    },
+                }
+            });
+        });
+    </script>
+</body></html>
