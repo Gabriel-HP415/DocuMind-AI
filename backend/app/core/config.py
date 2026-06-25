@@ -61,7 +61,7 @@ class Settings(BaseSettings):
     OLLAMA_NUM_CTX: int = 8192
 
     # Embedding
-    EMBEDDING_MODEL_NAME: str = "sentence-transformers/all-MiniLM-L6-v2"
+    OLLAMA_EMBEDDING_MODEL: str = "nomic-embed-text"
     CHUNK_SIZE: int = 750
     CHUNK_OVERLAP: int = 150
     TOP_K: int = 4
