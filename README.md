@@ -1,6 +1,47 @@
 # DocuMind-AI
 AI-Powered PDF Question Answering System Using RAG
 
+## Yêu cầu hệ thống
+
+- **Docker** (Docker Desktop) + **Docker Compose v2**
+- **RAM**: Tối thiểu 8GB (khuyến nghị 16GB+)
+- **Ổ cứng**: 10GB trống
+
+## Cài đặt nhanh
+
+### 1. Clone project
+```bash
+git clone <repo-url>
+cd DocuMind-AI
+```
+
+### 2. Tạo file .env (nếu chưa có)
+```bash
+cp backend/.env.example backend/.env
+```
+
+### 3. Khởi chạy
+```bash
+docker compose up -d
+```
+
+Đợi 2-3 phút để:
+- MySQL khởi tạo database
+- Ollama pull model llama3.2:3b (lần đầu)
+- Frontend + Backend khởi động
+
+### 4. Tạo tài khoản admin
+```bash
+docker exec documind_backend python -m app.scripts.seed_admin
+```
+
+### 5. Truy cập
+- **Frontend**: http://localhost:8080
+- **Backend API**: http://localhost:8000
+- **Docs API**: http://localhost:8000/docs
+
+**Đăng nhập**: admin@documind.ai / Admin@123
+
 ## Cấu trúc dự án
 
 ```
@@ -40,19 +81,41 @@ DocuMind-AI/
 └── docker-compose.yml
 ```
 
-## Chạy nhanh
+## Lệnh Docker thường dùng
 
-```powershell
-# Backend
-cd DocuMind-AI\backend
-python -m venv .venv
-.\.venv\Scripts\activate
-pip install -r requirements.txt
-Copy-Item .env.example .env
-python run.py
+```bash
+# Xem logs
+docker compose logs -f
 
-# Frontend (mở file HTML trực tiếp hoặc dùng Live Server)
-mở file trong thư mục frontend/ bằng trình duyệt
+# Restart
+docker compose restart
+
+# Dừng
+docker compose down
+
+# Rebuild (sau khi update code)
+docker compose up -d --build
+
+# Xóa toàn bộ data
+docker compose down -v
 ```
 
-Chi tiết cài đặt xem `backend/README.md`.
+## Khắc phục lỗi thường gặp
+
+### Lỗi "Connection refused" với Ollama
+Đợi 2-3 phút cho Ollama pull model xong:
+```bash
+docker compose logs ollama
+```
+
+### Lỗi database
+Kiểm tra MySQL đã healthy chưa:
+```bash
+docker compose ps
+docker compose logs mysql
+```
+
+### Tốc độ AI chậm
+- Ollama chạy trên CPU. Để nhanh hơn, cần GPU với CUDA.
+- Đã tối ưu: streaming response, context giảm, output limit.
+    

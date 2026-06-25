@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import List, Tuple
+from typing import Generator, List, Tuple
 
 from langchain_ollama import ChatOllama
 from langchain_core.prompts import ChatPromptTemplate
@@ -72,10 +72,19 @@ class RagService:
         return self._chain
 
     def ask(self, question: str) -> Tuple[str, List[dict]]:
-        # Search for relevant docs first
         docs = self.faiss_store.search(question, top_k=settings.TOP_K)
-        # Use cached chain
         chain = self._get_chain()
         answer = chain.invoke({"question": question})
         sources = [{"text": text, "score": score} for text, score in docs]
         return answer, sources
+
+    def ask_stream(self, question: str) -> Generator[str, None, None]:
+        """Streaming version of ask for faster UX."""
+        docs = self.faiss_store.search(question, top_k=settings.TOP_K)
+        chain = self._get_chain()
+        sources = [{"text": text, "score": score} for text, score in docs]
+        
+        # Use stream for LLM response
+        for chunk in chain.stream({"question": question}):
+            yield chunk
+

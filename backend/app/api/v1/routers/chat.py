@@ -1,8 +1,9 @@
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, AsyncGenerator
 
 from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.responses import StreamingResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
@@ -16,8 +17,57 @@ from app.repositories.pdf_repository import PdfRepository
 from app.schemas.chat import ChatAskRequest, ChatAskResponse, ChatSessionOut
 from app.services.rag import RagService
 from app.services.vector_store import FaissStore
+import json
 
 router = APIRouter(prefix="/chat", tags=["chat"])
+
+
+@router.post("/ask/stream")
+async def ask_stream(
+    payload: ChatAskRequest,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> StreamingResponse:
+    """Streaming chat response for faster UX."""
+    pdf_repo = PdfRepository(db)
+    chat_repo = ChatRepository(db)
+
+    doc = await pdf_repo.get_by_id(payload.document_id)
+    if doc is None:
+        raise HTTPException(status_code=404, detail="Document not found")
+    if doc.user_id != current_user.id and current_user.role != "admin":
+        raise HTTPException(status_code=403, detail="Access denied")
+    if not doc.is_indexed:
+        raise HTTPException(status_code=400, detail="Document not indexed yet")
+
+    # Create session
+    session = await chat_repo.create_session(
+        ChatSession(user_id=current_user.id, document_id=doc.id, title=payload.question[:80])
+    )
+    session_id = session.id
+
+    await chat_repo.add_message(ChatMessage(session_id=session_id, sender="user", message=payload.question))
+
+    async def generate():
+        try:
+            faiss_store = FaissStore(settings.FAISS_INDEX_DIR, doc.id)
+            rag = RagService(faiss_store)
+            
+            # Stream response
+            full_answer = ""
+            for chunk in rag.ask_stream(payload.question):
+                full_answer += chunk
+                yield f"data: {json.dumps({'chunk': chunk})}\n\n"
+            
+            # Save to DB after complete
+            await chat_repo.add_message(
+                ChatMessage(session_id=session_id, sender="assistant", message=full_answer, meta_json={"document_id": doc.id})
+            )
+            yield f"data: {json.dumps({'done': True, 'session_id': session_id})}\n\n"
+        except Exception as e:
+            yield f"data: {json.dumps({'error': str(e)})}\n\n"
+
+    return StreamingResponse(generate(), media_type="text/event-stream")
 
 
 @router.post("/ask", response_model=ChatAskResponse)
