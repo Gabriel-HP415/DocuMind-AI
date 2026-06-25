@@ -134,7 +134,7 @@
 </div>
 <!-- Navigation Tabs -->
 <nav class="flex-1 flex flex-col gap-1">
-<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors font-label-md text-label-md" href="#">
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors font-label-md text-label-md" href="dashboard.html">
 <span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
                 Dashboard
             </a>
@@ -143,20 +143,20 @@
 <span class="material-symbols-outlined fill-1" data-icon="description">description</span>
                 My Documents
             </a>
-<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors font-label-md text-label-md" href="#">
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors font-label-md text-label-md" href="dashboard.html">
 <span class="material-symbols-outlined" data-icon="history">history</span>
                 Chat History
             </a>
-<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors font-label-md text-label-md" href="#">
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors font-label-md text-label-md" href="dashboard.html">
 <span class="material-symbols-outlined" data-icon="settings">settings</span>
                 Settings
             </a>
 </nav>
 <!-- Footer / Profile -->
 <div class="mt-auto pt-4 border-t border-outline-variant/50">
-<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors font-label-md text-label-md" href="#">
-<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
-                Profile
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors font-label-md text-label-md" href="#" onclick="logout(); return false;">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+                Sign Out
             </a>
 </div>
 </aside>
@@ -194,110 +194,229 @@
 <p class="font-body-md text-body-md text-on-surface-variant">Add a new PDF to your knowledge base to start interacting with it.</p>
 </div>
 <!-- Upload Area (Glassmorphism Card) -->
-<div class="bg-surface/60 backdrop-blur-md rounded-2xl border border-outline-variant p-8 mb-12 shadow-sm relative overflow-hidden">
-<!-- Decorative background elements -->
+<div id="uploadCard" class="bg-surface/60 backdrop-blur-md rounded-2xl border border-outline-variant p-8 mb-12 shadow-sm relative overflow-hidden">
 <div class="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4 pointer-events-none"></div>
 <div class="absolute bottom-0 left-0 w-48 h-48 bg-secondary/5 rounded-full blur-2xl translate-y-1/4 -translate-x-1/4 pointer-events-none"></div>
 <!-- Drop Zone -->
-<div class="upload-zone relative z-10 border-2 border-dashed border-outline-variant hover:border-primary/50 hover:bg-primary-container/5 rounded-xl p-12 flex flex-col items-center justify-center text-center cursor-pointer transition-all duration-300 group">
+<div id="dropZone" class="upload-zone relative z-10 border-2 border-dashed border-outline-variant hover:border-primary/50 hover:bg-primary-container/5 rounded-xl p-12 flex flex-col items-center justify-center text-center cursor-pointer transition-all duration-300 group">
 <div class="w-16 h-16 rounded-full bg-primary-container/10 flex items-center justify-center mb-6 text-primary upload-icon">
 <span class="material-symbols-outlined text-[32px]" data-icon="cloud_upload">cloud_upload</span>
 </div>
 <h3 class="font-headline-md text-headline-md font-semibold text-on-surface mb-2">Drag and drop your PDF here</h3>
-<p class="font-body-md text-body-md text-on-surface-variant mb-6">or <span class="text-primary font-medium group-hover:underline">click to browse</span></p>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6">or <label class="text-primary font-medium group-hover:underline cursor-pointer"><input id="fileInput" accept=".pdf" class="hidden" type="file"/>click to browse</label></p>
 <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface-container border border-outline-variant/30 font-code-sm text-code-sm text-on-surface-variant">
 <span class="material-symbols-outlined text-[16px]" data-icon="info">info</span>
                         Supported format: PDF only, up to 50MB
                     </div>
-<input accept=".pdf" class="hidden" type="file"/>
 </div>
-<!-- Active Upload Progress (Example State) -->
-<div class="mt-6 border border-outline-variant/50 rounded-lg p-4 bg-surface flex items-center gap-4 relative overflow-hidden shadow-sm">
-<div class="w-10 h-10 rounded-lg bg-error-container/20 flex items-center justify-center text-error shrink-0">
+<!-- Upload Progress (hidden by default) -->
+<div id="uploadProgress" class="mt-6 border border-outline-variant/50 rounded-lg p-4 bg-surface flex items-center gap-4 relative overflow-hidden shadow-sm hidden">
+<div class="w-10 h-10 rounded-lg bg-primary-container/20 flex items-center justify-center text-primary shrink-0">
 <span class="material-symbols-outlined" data-icon="picture_as_pdf">picture_as_pdf</span>
 </div>
 <div class="flex-1 min-w-0">
 <div class="flex justify-between items-center mb-1">
-<span class="font-label-md text-label-md text-on-surface truncate pr-4">Biology_Thesis.pdf</span>
-<span class="font-code-sm text-code-sm text-primary font-medium shrink-0">65%</span>
+<span id="uploadFileName" class="font-label-md text-label-md text-on-surface truncate pr-4"></span>
+<span id="uploadPercent" class="font-code-sm text-code-sm text-primary font-medium shrink-0">0%</span>
 </div>
-<!-- Progress Bar -->
 <div class="h-1.5 w-full bg-surface-container-high rounded-full overflow-hidden">
-<div class="h-full bg-gradient-to-r from-primary to-secondary rounded-full" style="width: 65%;"></div>
+<div id="progressBar" class="h-full bg-gradient-to-r from-primary to-secondary rounded-full transition-all" style="width: 0%;"></div>
 </div>
 </div>
-<button class="text-on-surface-variant hover:text-error transition-colors p-1 rounded-md hover:bg-surface-container shrink-0">
-<span class="material-symbols-outlined text-[20px]" data-icon="close">close</span>
-</button>
 </div>
+<!-- Upload Status (success/error) -->
+<div id="uploadStatus" class="mt-4 hidden"></div>
 </div>
-<!-- Recently Uploaded Section (Bento Grid Style) -->
+<!-- Recently Uploaded Section -->
 <div class="mb-6 flex items-center justify-between">
-<h3 class="font-headline-md text-headline-md font-semibold text-on-surface">Recently Uploaded</h3>
-<a class="font-label-md text-label-md text-primary hover:underline flex items-center gap-1" href="#">
-                    View all
-                    <span class="material-symbols-outlined text-[16px]" data-icon="arrow_forward">arrow_forward</span>
-</a>
+<h3 class="font-headline-md text-headline-md font-semibold text-on-surface">My Documents</h3>
 </div>
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-<!-- Document Card 1 -->
-<div class="bg-surface rounded-xl border border-outline-variant/50 p-5 hover:shadow-xl hover:border-primary/30 transition-all duration-300 group cursor-pointer flex flex-col h-full">
-<div class="flex justify-between items-start mb-4">
-<div class="w-12 h-12 rounded-lg bg-surface-container-high flex items-center justify-center text-primary group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
-<span class="material-symbols-outlined" data-icon="description">description</span>
-</div>
-<button class="text-outline hover:text-on-surface p-1 rounded-md">
-<span class="material-symbols-outlined text-[20px]" data-icon="more_vert">more_vert</span>
-</button>
-</div>
-<div class="mt-auto">
-<h4 class="font-label-md text-label-md font-semibold text-on-surface mb-1 line-clamp-2 group-hover:text-primary transition-colors">Q3_Financial_Report_Final.pdf</h4>
-<div class="flex items-center gap-3 font-body-sm text-body-sm text-on-surface-variant">
-<span>2.4 MB</span>
-<span class="w-1 h-1 rounded-full bg-outline-variant"></span>
-<span>Today, 10:42 AM</span>
-</div>
-</div>
-</div>
-<!-- Document Card 2 -->
-<div class="bg-surface rounded-xl border border-outline-variant/50 p-5 hover:shadow-xl hover:border-primary/30 transition-all duration-300 group cursor-pointer flex flex-col h-full">
-<div class="flex justify-between items-start mb-4">
-<div class="w-12 h-12 rounded-lg bg-surface-container-high flex items-center justify-center text-primary group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
-<span class="material-symbols-outlined" data-icon="description">description</span>
-</div>
-<button class="text-outline hover:text-on-surface p-1 rounded-md">
-<span class="material-symbols-outlined text-[20px]" data-icon="more_vert">more_vert</span>
-</button>
-</div>
-<div class="mt-auto">
-<h4 class="font-label-md text-label-md font-semibold text-on-surface mb-1 line-clamp-2 group-hover:text-primary transition-colors">Project_Apollo_Specifications.pdf</h4>
-<div class="flex items-center gap-3 font-body-sm text-body-sm text-on-surface-variant">
-<span>8.1 MB</span>
-<span class="w-1 h-1 rounded-full bg-outline-variant"></span>
-<span>Yesterday, 4:15 PM</span>
-</div>
-</div>
-</div>
-<!-- Document Card 3 -->
-<div class="bg-surface rounded-xl border border-outline-variant/50 p-5 hover:shadow-xl hover:border-primary/30 transition-all duration-300 group cursor-pointer flex flex-col h-full">
-<div class="flex justify-between items-start mb-4">
-<div class="w-12 h-12 rounded-lg bg-surface-container-high flex items-center justify-center text-primary group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
-<span class="material-symbols-outlined" data-icon="description">description</span>
-</div>
-<button class="text-outline hover:text-on-surface p-1 rounded-md">
-<span class="material-symbols-outlined text-[20px]" data-icon="more_vert">more_vert</span>
-</button>
-</div>
-<div class="mt-auto">
-<h4 class="font-label-md text-label-md font-semibold text-on-surface mb-1 line-clamp-2 group-hover:text-primary transition-colors">User_Research_Interviews_Transcript.pdf</h4>
-<div class="flex items-center gap-3 font-body-sm text-body-sm text-on-surface-variant">
-<span>1.2 MB</span>
-<span class="w-1 h-1 rounded-full bg-outline-variant"></span>
-<span>Oct 12, 2023</span>
-</div>
-</div>
-</div>
+<div id="docsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<div class="col-span-full text-center py-8 text-on-surface-variant">
+<span class="material-symbols-outlined text-[48px] text-outline mb-2 block">description</span>
+<p class="font-body-md">No documents yet. Upload a PDF above to get started.</p>
 </div>
 </div>
 </main>
+<script src="js/auth.js"></script>
+<script>
+    if (!requireAuth()) {}
+
+    // --- Upload Logic ---
+    const fileInput = document.getElementById('fileInput');
+    const dropZone = document.getElementById('dropZone');
+    const uploadProgress = document.getElementById('uploadProgress');
+    const uploadFileName = document.getElementById('uploadFileName');
+    const uploadPercent = document.getElementById('uploadPercent');
+    const progressBar = document.getElementById('progressBar');
+    const uploadStatus = document.getElementById('uploadStatus');
+    const docsContainer = document.getElementById('docsContainer');
+
+    function formatBytes(bytes) {
+        if (bytes < 1024) return bytes + ' B';
+        if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+        return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+    }
+
+    function formatDate(dateStr) {
+        const d = new Date(dateStr);
+        const now = new Date();
+        const diff = now - d;
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        if (days === 0) return 'Today, ' + d.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+        if (days === 1) return 'Yesterday, ' + d.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+        return d.toLocaleDateString();
+    }
+
+    async function loadDocuments() {
+        try {
+            const docs = await apiFetch('/documents/');
+            if (!docs) return;
+            renderDocs(docs);
+        } catch(e) { console.error(e); }
+    }
+
+    function renderDocs(docs) {
+        if (!docs.length) {
+            docsContainer.innerHTML = '<div class="col-span-full text-center py-8 text-on-surface-variant"><span class="material-symbols-outlined text-[48px] text-outline mb-2 block">description</span><p class="font-body-md">No documents yet. Upload a PDF above to get started.</p></div>';
+            return;
+        }
+        docsContainer.innerHTML = docs.map(doc => `
+            <div class="bg-surface rounded-xl border border-outline-variant/50 p-5 hover:shadow-xl hover:border-primary/30 transition-all duration-300 flex flex-col h-full">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="w-12 h-12 rounded-lg bg-surface-container-high flex items-center justify-center text-primary">
+                        <span class="material-symbols-outlined">description</span>
+                    </div>
+                    <div class="flex gap-1">
+                        <button onclick="startChat(${doc.id}, '${doc.file_name.replace(/'/g,"\\'")}')" class="text-primary hover:bg-primary-container/20 p-1 rounded-md transition-colors" title="Chat with this document">
+                            <span class="material-symbols-outlined text-[20px]">chat</span>
+                        </button>
+                        <button onclick="deleteDoc(${doc.id})" class="text-outline hover:text-error hover:bg-error-container/20 p-1 rounded-md transition-colors" title="Delete document">
+                            <span class="material-symbols-outlined text-[20px]">delete</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="mt-auto">
+                    <h4 class="font-label-md text-label-md font-semibold text-on-surface mb-1 line-clamp-2">${doc.file_name}</h4>
+                    <div class="flex items-center gap-3 font-body-sm text-body-sm text-on-surface-variant">
+                        <span>${formatBytes(doc.file_size)}</span>
+                        <span class="w-1 h-1 rounded-full bg-outline-variant"></span>
+                        <span>${doc.total_pages} pages</span>
+                        <span class="w-1 h-1 rounded-full bg-outline-variant"></span>
+                        <span>${formatDate(doc.uploaded_at)}</span>
+                    </div>
+                    <div class="mt-2 flex items-center gap-1">
+                        <span class="material-symbols-outlined text-[14px] ${doc.is_indexed ? 'text-green-500' : 'text-yellow-500'}">${doc.is_indexed ? 'check_circle' : 'pending'}</span>
+                        <span class="font-body-sm text-[12px] ${doc.is_indexed ? 'text-green-600' : 'text-yellow-600'}">${doc.is_indexed ? 'Indexed' : 'Indexing...'}</span>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    async function uploadFile(file) {
+        if (!file) return;
+        if (!file.name.toLowerCase().endsWith('.pdf')) {
+            showToast('Only PDF files are supported.', 'error');
+            return;
+        }
+        if (file.size > 50 * 1024 * 1024) {
+            showToast('File too large. Max 50MB.', 'error');
+            return;
+        }
+
+        uploadFileName.textContent = file.name;
+        uploadPercent.textContent = '0%';
+        progressBar.style.width = '0%';
+        uploadProgress.classList.remove('hidden');
+        uploadStatus.classList.add('hidden');
+
+        const formData = new FormData();
+        formData.append('file', file);
+
+        try {
+            const xhr = new XMLHttpRequest();
+            xhr.upload.addEventListener('progress', function(e) {
+                if (e.lengthComputable) {
+                    const pct = Math.round((e.loaded / e.total) * 100);
+                    progressBar.style.width = pct + '%';
+                    uploadPercent.textContent = pct + '%';
+                }
+            });
+
+            xhr.addEventListener('load', function() {
+                if (xhr.status >= 200 && xhr.status < 300) {
+                    progressBar.style.width = '100%';
+                    uploadPercent.textContent = '100%';
+                    showToast('Document uploaded and indexing!', 'success');
+                    uploadStatus.classList.remove('hidden');
+                    uploadStatus.innerHTML = '<div class="flex items-center gap-2 text-green-600 font-body-sm"><span class="material-symbols-outlined text-[16px]">check_circle</span>Upload complete. AI is indexing your document...</div>';
+                    setTimeout(() => {
+                        uploadProgress.classList.add('hidden');
+                        uploadStatus.classList.add('hidden');
+                        loadDocuments();
+                    }, 2000);
+                } else {
+                    try {
+                        const err = JSON.parse(xhr.responseText);
+                        showToast(err.detail || 'Upload failed', 'error');
+                    } catch(e2) {
+                        showToast('Upload failed', 'error');
+                    }
+                    uploadProgress.classList.add('hidden');
+                }
+            });
+
+            xhr.addEventListener('error', function() {
+                showToast('Network error during upload', 'error');
+                uploadProgress.classList.add('hidden');
+            });
+
+            xhr.open('POST', '/api/v1/documents/upload-pdf');
+            const token = getToken();
+            if (token) xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+            xhr.send(formData);
+        } catch(e) {
+            showToast('Upload error: ' + e.message, 'error');
+            uploadProgress.classList.add('hidden');
+        }
+    }
+
+    fileInput.addEventListener('change', function() {
+        if (this.files.length) uploadFile(this.files[0]);
+    });
+
+    dropZone.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        dropZone.classList.add('border-primary', 'bg-primary-container/5');
+    });
+    dropZone.addEventListener('dragleave', function(e) {
+        e.preventDefault();
+        dropZone.classList.remove('border-primary', 'bg-primary-container/5');
+    });
+    dropZone.addEventListener('drop', function(e) {
+        e.preventDefault();
+        dropZone.classList.remove('border-primary', 'bg-primary-container/5');
+        if (e.dataTransfer.files.length) uploadFile(e.dataTransfer.files[0]);
+    });
+
+    async function deleteDoc(id) {
+        if (!confirm('Delete this document?')) return;
+        try {
+            await apiFetch('/documents/' + id, { method: 'DELETE' });
+            showToast('Document deleted', 'success');
+            loadDocuments();
+        } catch(e) {
+            showToast(e.message || 'Delete failed', 'error');
+        }
+    }
+
+    function startChat(docId, fileName) {
+        sessionStorage.setItem('documind_chat_doc', docId);
+        sessionStorage.setItem('documind_chat_doc_name', fileName);
+        window.location.href = 'chat.html';
+    }
+
+    loadDocuments();
+</script>
 </body></html>

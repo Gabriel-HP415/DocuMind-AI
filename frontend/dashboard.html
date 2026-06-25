@@ -203,15 +203,15 @@
 </div>
 <nav class="flex-1 space-y-2">
 <!-- Active Tab: Dashboard -->
-<a class="flex items-center gap-3 px-4 py-3 text-primary dark:text-inverse-primary font-bold bg-primary-container/20 dark:bg-primary-container/40 rounded-xl hover:bg-surface-container-high transition-colors scale-95 duration-150" href="#">
+<a class="flex items-center gap-3 px-4 py-3 text-primary dark:text-inverse-primary font-bold bg-primary-container/20 dark:bg-primary-container/40 rounded-xl hover:bg-surface-container-high transition-colors scale-95 duration-150" href="dashboard.html">
 <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
 <span class="font-label-md text-label-md">Dashboard</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant dark:text-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors rounded-xl" href="#">
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant dark:text-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors rounded-xl" href="upload.html">
 <span class="material-symbols-outlined">description</span>
 <span class="font-label-md text-label-md">My Documents</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant dark:text-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors rounded-xl" href="#">
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant dark:text-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors rounded-xl" href="chat.html">
 <span class="material-symbols-outlined">history</span>
 <span class="font-label-md text-label-md">Chat History</span>
 </a>
@@ -221,9 +221,9 @@
 </a>
 </nav>
 <div class="mt-auto pt-6 border-t border-outline-variant/50">
-<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors rounded-xl" href="#">
-<span class="material-symbols-outlined">account_circle</span>
-<span class="font-label-md text-label-md">Profile</span>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors rounded-xl" href="#" onclick="logout(); return false;">
+<span class="material-symbols-outlined">logout</span>
+<span class="font-label-md text-label-md">Sign Out</span>
 </a>
 </div>
 </aside>
@@ -250,13 +250,13 @@
 <main class="flex-1 md:ml-[280px] pt-24 px-margin-mobile md:px-margin-desktop pb-24 max-w-container-max mx-auto w-full">
 <!-- Welcome Section -->
 <div class="mb-12">
-<h2 class="font-headline-lg text-headline-lg md:font-display-lg md:text-display-lg text-on-surface tracking-tight">Welcome back, <span class="text-primary">Alex</span></h2>
-<p class="font-body-lg text-body-lg text-on-surface-variant mt-2 max-w-2xl">Ready to analyze your documents? You have 3 new notifications waiting.</p>
+<h2 class="font-headline-lg text-headline-lg md:font-display-lg md:text-display-lg text-on-surface tracking-tight">Welcome back, <span id="userName" class="text-primary">User</span></h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant mt-2 max-w-2xl">Ready to analyze your documents?</p>
 </div>
 <!-- Quick Actions Bento Grid -->
 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
 <!-- Action Card 1: New Upload -->
-<button class="group relative overflow-hidden bg-surface-container-lowest border border-outline-variant/30 rounded-2xl p-6 text-left transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:border-primary/30 flex flex-col items-start h-full soft-shadow">
+<a href="upload.html" class="group relative overflow-hidden bg-surface-container-lowest border border-outline-variant/30 rounded-2xl p-6 text-left transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:border-primary/30 flex flex-col items-start h-full soft-shadow no-underline">
 <div class="w-12 h-12 rounded-xl bg-primary-container/10 flex items-center justify-center mb-6 group-hover:bg-primary-container/20 transition-colors">
 <span class="material-symbols-outlined text-primary text-3xl">upload_file</span>
 </div>
@@ -267,96 +267,73 @@
 <div class="h-full bg-gradient-to-r from-primary to-secondary w-0 group-hover:w-full transition-all duration-700 ease-out"></div>
 </div>
 </div>
-</button>
+</a>
 <!-- Action Card 2: Continue Chatting -->
-<button class="group relative overflow-hidden bg-surface-container-lowest border border-outline-variant/30 rounded-2xl p-6 text-left transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:border-secondary/30 flex flex-col items-start h-full soft-shadow">
+<a href="chat.html" class="group relative overflow-hidden bg-surface-container-lowest border border-outline-variant/30 rounded-2xl p-6 text-left transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:border-secondary/30 flex flex-col items-start h-full soft-shadow no-underline">
 <div class="w-12 h-12 rounded-xl bg-secondary-container/10 flex items-center justify-center mb-6 group-hover:bg-secondary-container/20 transition-colors">
 <span class="material-symbols-outlined text-secondary text-3xl">chat</span>
 </div>
 <h3 class="font-headline-md text-headline-md text-on-surface mb-2">Continue Chatting</h3>
 <p class="font-body-sm text-body-sm text-on-surface-variant">Resume your last document session</p>
-<div class="mt-auto pt-6 flex items-center gap-2">
-<span class="inline-flex items-center rounded-md bg-surface-container-low px-2 py-1 font-label-md text-label-md text-on-surface-variant text-xs">Research_Q4.pdf</span>
+<div class="mt-auto pt-6">
+<div id="lastDocBadge" class="inline-flex items-center rounded-md bg-surface-container-low px-2 py-1 font-label-md text-label-md text-on-surface-variant text-xs">No recent chats</div>
 </div>
-</button>
+</a>
 <!-- Action Card 3: Browse Documents -->
-<button class="group relative overflow-hidden bg-surface-container-lowest border border-outline-variant/30 rounded-2xl p-6 text-left transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:border-tertiary/30 flex flex-col items-start h-full soft-shadow">
+<a href="upload.html" class="group relative overflow-hidden bg-surface-container-lowest border border-outline-variant/30 rounded-2xl p-6 text-left transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:border-tertiary/30 flex flex-col items-start h-full soft-shadow no-underline">
 <div class="w-12 h-12 rounded-xl bg-tertiary-container/10 flex items-center justify-center mb-6 group-hover:bg-tertiary-container/20 transition-colors">
 <span class="material-symbols-outlined text-tertiary text-3xl">folder_open</span>
 </div>
 <h3 class="font-headline-md text-headline-md text-on-surface mb-2">Browse Documents</h3>
-<p class="font-body-sm text-body-sm text-on-surface-variant">Access your library of 42 files</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Access your library of <span id="docCount">0</span> files</p>
 <div class="absolute -right-6 -bottom-6 opacity-5 group-hover:opacity-10 transition-opacity duration-300">
 <span class="material-symbols-outlined text-[120px]">folder</span>
 </div>
-</button>
+</a>
 </div>
 <!-- Recent Activity Section -->
 <section>
 <div class="flex items-center justify-between mb-6">
 <h3 class="font-headline-lg text-headline-lg text-on-surface">Recent Activity</h3>
-<button class="text-primary font-label-md text-label-md hover:underline underline-offset-4 flex items-center gap-1">
-                    View All <span class="material-symbols-outlined text-sm">arrow_forward</span>
-</button>
 </div>
-<div class="bg-surface-container-lowest border border-outline-variant/30 rounded-2xl overflow-hidden soft-shadow">
-<div class="divide-y divide-outline-variant/20">
-<!-- Activity Item 1 -->
-<div class="p-4 md:p-6 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-surface-container-low/50 transition-colors group cursor-pointer">
-<div class="flex items-start gap-4">
-<div class="w-10 h-10 rounded-lg bg-error-container/30 flex items-center justify-center shrink-0 mt-1 md:mt-0">
-<span class="material-symbols-outlined text-error">picture_as_pdf</span>
-</div>
-<div>
-<h4 class="font-label-md text-label-md text-on-surface text-base group-hover:text-primary transition-colors">Q4 Financial Synthesis Report.pdf</h4>
-<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">You asked: "Summarize key risk factors in section 3."</p>
-</div>
-</div>
-<div class="flex items-center justify-between md:justify-end gap-4 md:w-48 shrink-0">
-<span class="font-code-sm text-code-sm text-outline">2 hrs ago</span>
-<button class="p-2 text-outline hover:text-primary rounded-full hover:bg-surface-container-high transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100">
-<span class="material-symbols-outlined text-[20px]">more_vert</span>
-</button>
-</div>
-</div>
-<!-- Activity Item 2 -->
-<div class="p-4 md:p-6 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-surface-container-low/50 transition-colors group cursor-pointer">
-<div class="flex items-start gap-4">
-<div class="w-10 h-10 rounded-lg bg-error-container/30 flex items-center justify-center shrink-0 mt-1 md:mt-0">
-<span class="material-symbols-outlined text-error">picture_as_pdf</span>
-</div>
-<div>
-<h4 class="font-label-md text-label-md text-on-surface text-base group-hover:text-primary transition-colors">Machine Learning Academic Paper.pdf</h4>
-<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Extracted 12 citations from bibliography.</p>
-</div>
-</div>
-<div class="flex items-center justify-between md:justify-end gap-4 md:w-48 shrink-0">
-<span class="font-code-sm text-code-sm text-outline">Yesterday</span>
-<button class="p-2 text-outline hover:text-primary rounded-full hover:bg-surface-container-high transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100">
-<span class="material-symbols-outlined text-[20px]">more_vert</span>
-</button>
-</div>
-</div>
-<!-- Activity Item 3 -->
-<div class="p-4 md:p-6 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-surface-container-low/50 transition-colors group cursor-pointer">
-<div class="flex items-start gap-4">
-<div class="w-10 h-10 rounded-lg bg-surface-variant flex items-center justify-center shrink-0 mt-1 md:mt-0">
-<span class="material-symbols-outlined text-on-surface-variant">description</span>
-</div>
-<div>
-<h4 class="font-label-md text-label-md text-on-surface text-base group-hover:text-primary transition-colors">Project_Titan_Brief.docx</h4>
-<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Uploaded and indexed successfully.</p>
-</div>
-</div>
-<div class="flex items-center justify-between md:justify-end gap-4 md:w-48 shrink-0">
-<span class="font-code-sm text-code-sm text-outline">Oct 12, 2024</span>
-<button class="p-2 text-outline hover:text-primary rounded-full hover:bg-surface-container-high transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100">
-<span class="material-symbols-outlined text-[20px]">more_vert</span>
-</button>
-</div>
-</div>
+<div id="recentActivity" class="bg-surface-container-lowest border border-outline-variant/30 rounded-2xl overflow-hidden soft-shadow">
+<div class="p-8 text-center text-on-surface-variant">
+<span class="material-symbols-outlined text-[48px] text-outline mb-2 block">history</span>
+<p class="font-body-md">No recent activity. Upload a document to get started.</p>
 </div>
 </div>
 </section>
 </main>
+<script src="js/auth.js"></script>
+<script>
+if (!requireAuth()) {}
+
+(async () => {
+    const docs = await apiFetch('/documents/').catch(() => null) || [];
+    document.getElementById('docCount').textContent = docs.length;
+    if (docs.length > 0) {
+        document.getElementById('lastDocBadge').textContent = docs[0].file_name;
+    }
+
+    const sessions = await apiFetch('/chat/sessions').catch(() => null) || [];
+    if (sessions.length > 0) {
+        const container = document.getElementById('recentActivity');
+        container.innerHTML = '<div class="divide-y divide-outline-variant/20">' +
+            sessions.slice(0, 5).map(s => `<div class="p-4 md:p-6 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-surface-container-low/50 transition-colors group cursor-pointer" onclick="sessionStorage.setItem('documind_chat_doc','${s.document_id}');window.location.href='chat.html'">
+<div class="flex items-start gap-4">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center shrink-0 mt-1 md:mt-0">
+<span class="material-symbols-outlined text-primary">chat</span>
+</div>
+<div>
+<h4 class="font-label-md text-label-md text-on-surface text-base group-hover:text-primary transition-colors">${s.title || 'Chat session'}</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Session ID: ${s.id}</p>
+</div>
+</div>
+<div class="flex items-center justify-between md:justify-end gap-4 md:w-48 shrink-0">
+<span class="font-code-sm text-code-sm text-outline">${new Date(s.created_at).toLocaleDateString()}</span>
+</div>
+</div>`).join('') + '</div>';
+    }
+})();
+</script>
 </body></html>

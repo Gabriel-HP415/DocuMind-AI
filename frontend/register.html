@@ -140,7 +140,7 @@
 <p class="font-body-md text-body-md text-on-surface-variant">Start organizing and analyzing your academic research today.</p>
 </div>
 <!-- Sign-up Form -->
-<form class="w-full flex flex-col gap-5">
+<form id="registerForm" class="w-full flex flex-col gap-5">
 <!-- Full Name -->
 <div class="flex flex-col gap-1.5">
 <label class="font-label-md text-label-md text-on-surface-variant" for="fullName">Full Name</label>
@@ -156,15 +156,15 @@
 <label class="font-label-md text-label-md text-on-surface-variant" for="password">Password</label>
 <div class="relative">
 <input class="w-full px-4 py-3 bg-surface-container-low border border-transparent rounded-lg font-body-md text-body-md text-on-surface placeholder:text-outline/60 focus:bg-surface-container-lowest focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all pr-10" id="password" name="password" placeholder="••••••••" required="" type="password"/>
-<button aria-label="Toggle password visibility" class="absolute right-3 top-1/2 -translate-y-1/2 text-outline hover:text-on-surface-variant transition-colors" type="button">
+<button aria-label="Toggle password visibility" class="absolute right-3 top-1/2 -translate-y-1/2 text-outline hover:text-on-surface-variant transition-colors" type="button" onclick="var i=document.getElementById('password');var s=this.querySelector('span');i.type=i.type==='password'?'text':'password';s.textContent=i.type==='password'?'visibility_off':'visibility'">
 <span class="material-symbols-outlined text-[20px]" data-icon="visibility_off">visibility_off</span>
 </button>
 </div>
 <p class="font-body-sm text-body-sm text-outline mt-1">Must be at least 8 characters long.</p>
 </div>
 <!-- Primary Action -->
-<button class="w-full mt-2 py-3.5 px-4 bg-primary text-on-primary font-label-md text-label-md rounded-lg hover:bg-on-primary-fixed-variant transition-colors shadow-sm flex items-center justify-center gap-2 group" type="submit">
-                Create Account
+<button id="registerBtn" class="w-full mt-2 py-3.5 px-4 bg-primary text-on-primary font-label-md text-label-md rounded-lg hover:bg-on-primary-fixed-variant transition-colors shadow-sm flex items-center justify-center gap-2 group" type="submit">
+                <span id="registerBtnText">Create Account</span>
                 <span class="material-symbols-outlined text-[18px] group-hover:translate-x-1 transition-transform" data-icon="arrow_forward">arrow_forward</span>
 </button>
 </form>
@@ -193,7 +193,54 @@
 <!-- Footer Link -->
 <p class="font-body-sm text-body-sm text-on-surface-variant mt-8 text-center">
             Already have an account? 
-            <a class="text-primary font-medium hover:underline hover:text-primary-fixed-variant transition-colors" href="#">Log in here</a>
+            <a class="text-primary font-medium hover:underline hover:text-primary-fixed-variant transition-colors" href="sign_in.html">Log in here</a>
 </p>
 </main>
+<script src="js/auth.js"></script>
+<script>
+        if (isLoggedIn()) { window.location.href = 'dashboard.html'; }
+
+        document.getElementById('registerForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const btn = document.getElementById('registerBtn');
+            const btnText = document.getElementById('registerBtnText');
+            btn.disabled = true;
+            btnText.textContent = 'Creating account...';
+
+            const password = document.getElementById('password').value;
+            if (password.length < 8) {
+                showToast('Password must be at least 8 characters', 'error');
+                btn.disabled = false;
+                btnText.textContent = 'Create Account';
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/v1/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        fullname: document.getElementById('fullName').value,
+                        email: document.getElementById('email').value,
+                        password: password
+                    })
+                });
+
+                const data = await res.json();
+                if (!res.ok) {
+                    showToast(data.detail || 'Registration failed', 'error');
+                    btn.disabled = false;
+                    btnText.textContent = 'Create Account';
+                    return;
+                }
+
+                showToast('Account created! Redirecting to login...', 'success');
+                setTimeout(() => { window.location.href = 'sign_in.html'; }, 1000);
+            } catch (err) {
+                showToast('Network error. Is the backend running?', 'error');
+                btn.disabled = false;
+                btnText.textContent = 'Create Account';
+            }
+        });
+    </script>
 </body></html>

@@ -215,13 +215,13 @@
 </div>
 <ul class="flex flex-col gap-2 flex-grow">
 <li>
-<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant dark:text-surface-variant hover:text-primary hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors" href="#">
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant dark:text-surface-variant hover:text-primary hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors" href="dashboard.html">
 <span class="material-symbols-outlined">dashboard</span>
 <span class="font-label-md text-label-md">Dashboard</span>
 </a>
 </li>
 <li>
-<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant dark:text-surface-variant hover:text-primary hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors" href="#">
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant dark:text-surface-variant hover:text-primary hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors" href="upload.html">
 <span class="material-symbols-outlined">description</span>
 <span class="font-label-md text-label-md">My Documents</span>
 </a>
@@ -240,9 +240,9 @@
 </li>
 </ul>
 <div class="mt-auto border-t border-outline-variant/30 pt-4">
-<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant dark:text-surface-variant hover:text-primary hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors" href="#">
-<span class="material-symbols-outlined">account_circle</span>
-<span class="font-label-md text-label-md">Profile</span>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant dark:text-surface-variant hover:text-primary hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors" href="#" onclick="logout(); return false;">
+<span class="material-symbols-outlined">logout</span>
+<span class="font-label-md text-label-md">Sign Out</span>
 </a>
 </div>
 </nav>
@@ -263,105 +263,54 @@
 <!-- Document & Chat Layout -->
 <div class="flex flex-1 pt-16 h-full overflow-hidden">
 <!-- Context Sidebar (Document Focus) -->
-<aside class="hidden lg:flex flex-col w-[300px] border-r border-outline-variant/50 bg-surface-bright overflow-y-auto custom-scrollbar p-6">
+<aside id="docSidebar" class="hidden lg:flex flex-col w-[300px] border-r border-outline-variant/50 bg-surface-bright overflow-y-auto custom-scrollbar p-6">
 <div class="mb-6">
 <span class="inline-block px-2 py-1 bg-surface-container-highest text-primary font-code-sm text-code-sm rounded mb-2">PDF Context</span>
-<h2 class="font-headline-md text-headline-md text-on-surface flex items-start gap-2">
+<h2 id="docTitle" class="font-headline-md text-headline-md text-on-surface flex items-start gap-2">
 <span class="material-symbols-outlined text-primary mt-1">menu_book</span>
-                        Quantum Physics.pdf
+                        Select a document
                     </h2>
-<p class="text-on-surface-variant font-body-sm text-body-sm mt-2 flex items-center gap-1">
-<span class="material-symbols-outlined text-[16px]">info</span> 42 pages • 1.2MB
+<p id="docMeta" class="text-on-surface-variant font-body-sm text-body-sm mt-2 flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">info</span> <span id="docPages">—</span>
                     </p>
 </div>
 <h3 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider mb-4">Table of Contents</h3>
-<nav class="flex flex-col gap-1">
-<a class="px-3 py-2 rounded-lg hover:bg-surface-container-high text-on-surface font-body-sm text-body-sm transition-colors border-l-2 border-transparent hover:border-primary" href="#">1. Introduction to Quantum Mechanics</a>
-<a class="px-3 py-2 rounded-lg bg-primary-container/10 text-primary font-body-sm text-body-sm transition-colors border-l-2 border-primary" href="#">2. Wave-Particle Duality</a>
-<a class="px-3 py-2 rounded-lg hover:bg-surface-container-high text-on-surface font-body-sm text-body-sm transition-colors border-l-2 border-transparent hover:border-primary pl-6" href="#">2.1 The Double-Slit Experiment</a>
-<a class="px-3 py-2 rounded-lg hover:bg-surface-container-high text-on-surface font-body-sm text-body-sm transition-colors border-l-2 border-transparent hover:border-primary pl-6" href="#">2.2 De Broglie Hypothesis</a>
-<a class="px-3 py-2 rounded-lg hover:bg-surface-container-high text-on-surface font-body-sm text-body-sm transition-colors border-l-2 border-transparent hover:border-primary" href="#">3. The Schrödinger Equation</a>
-<a class="px-3 py-2 rounded-lg hover:bg-surface-container-high text-on-surface font-body-sm text-body-sm transition-colors border-l-2 border-transparent hover:border-primary" href="#">4. Quantum Entanglement</a>
-</nav>
+<div id="docToc" class="text-on-surface-variant text-sm italic">Upload a document and click "Chat" to begin.</div>
+<div class="mt-auto pt-4 border-t border-outline-variant/30">
+<button onclick="window.location.href='upload.html'" class="w-full flex items-center justify-center gap-2 py-2 px-4 rounded-xl bg-primary text-on-primary font-label-md text-label-md hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined text-[18px]">add</span> Add document
+</button>
+</div>
 </aside>
 <!-- Chat Canvas -->
 <section class="flex-1 flex flex-col relative bg-background">
 <!-- Chat Scroll Area -->
-<div class="flex-1 overflow-y-auto custom-scrollbar p-6 lg:p-8 flex flex-col gap-8 pb-32">
-<!-- Welcome/Empty State -->
-<div class="flex flex-col items-center justify-center py-12 text-center max-w-lg mx-auto opacity-70">
+<div id="chatMessages" class="flex-1 overflow-y-auto custom-scrollbar p-6 lg:p-8 flex flex-col gap-6 pb-44">
+<!-- Empty State (shown when no doc selected) -->
+<div id="emptyState" class="flex flex-col items-center justify-center py-12 text-center max-w-lg mx-auto opacity-70">
 <div class="w-16 h-16 rounded-2xl bg-surface-container-high flex items-center justify-center mb-4 shadow-sm">
 <span class="material-symbols-outlined text-primary text-3xl">auto_awesome</span>
 </div>
-<h3 class="font-headline-lg text-headline-lg text-on-surface mb-2">Ready to explore</h3>
-<p class="font-body-md text-body-md text-on-surface-variant">I've read "Quantum Physics.pdf". What would you like to know?</p>
-</div>
-<!-- User Message -->
-<div class="flex gap-4 justify-end">
-<div class="max-w-[80%] md:max-w-[70%]">
-<div class="user-message-bg p-4 rounded-2xl rounded-tr-sm shadow-sm">
-<p class="font-body-md text-body-md text-on-surface">Can you explain the double-slit experiment simply?</p>
-</div>
-<span class="text-[11px] text-on-surface-variant/60 block text-right mt-1">10:42 AM</span>
-</div>
-<div class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center flex-shrink-0">
-<span class="material-symbols-outlined text-primary text-sm">person</span>
-</div>
-</div>
-<!-- AI Response -->
-<div class="flex gap-4 justify-start">
-<div class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center flex-shrink-0 shadow-sm">
-<span class="material-symbols-outlined text-on-primary text-sm">smart_toy</span>
-</div>
-<div class="max-w-[85%] md:max-w-[75%]">
-<div class="ai-message-gradient p-5 rounded-2xl rounded-tl-sm shadow-sm backdrop-blur-sm">
-<p class="font-body-md text-body-md text-on-surface mb-4 leading-relaxed">
-                                    The double-slit experiment is a demonstration that light and matter can display characteristics of both classically defined waves and particles. 
-                                </p>
-<p class="font-body-md text-body-md text-on-surface mb-4 leading-relaxed">
-                                    Imagine firing marbles through two narrow slits in a wall. You'd expect them to hit a screen behind the wall in two distinct bands. However, when we fire tiny particles like electrons (or photons of light) through the slits, they don't form two bands. Instead, they form an interference pattern—many bands of varying intensity. This pattern only makes sense if the particles are acting like waves, interfering with each other.
-                                </p>
-<!-- Citation Card -->
-<div class="mt-4 bg-surface-container-lowest border border-outline-variant/40 rounded-xl p-3 flex gap-3 items-start shadow-sm hover:shadow-md transition-shadow cursor-pointer group">
-<div class="bg-primary-container/10 p-2 rounded-lg text-primary">
-<span class="material-symbols-outlined text-sm">find_in_page</span>
-</div>
-<div>
-<p class="font-label-md text-label-md text-on-surface group-hover:text-primary transition-colors">Source: Page 14, Paragraph 2</p>
-<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2 mt-1">"The phenomenon of interference observed in the double-slit apparatus provides the foundational empirical basis for wave-particle duality in quantum mechanics..."</p>
-</div>
-</div>
-</div>
-<div class="flex gap-2 mt-2 ml-1">
-<button class="text-on-surface-variant/60 hover:text-primary transition-colors p-1"><span class="material-symbols-outlined text-[18px]">thumb_up</span></button>
-<button class="text-on-surface-variant/60 hover:text-primary transition-colors p-1"><span class="material-symbols-outlined text-[18px]">thumb_down</span></button>
-<button class="text-on-surface-variant/60 hover:text-primary transition-colors p-1"><span class="material-symbols-outlined text-[18px]">content_copy</span></button>
-</div>
-</div>
+<h3 class="font-headline-lg text-headline-lg text-on-surface mb-2">Ask questions about your documents</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Select a document from the sidebar or <a href="upload.html" class="text-primary underline">upload</a> a PDF to get started.</p>
 </div>
 </div>
 <!-- Input Area (Fixed Bottom) -->
 <div class="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-background via-background to-transparent pt-12">
 <div class="max-w-4xl mx-auto">
 <!-- Suggested Questions -->
-<div class="flex gap-2 mb-3 overflow-x-auto custom-scrollbar pb-2">
-<button class="whitespace-nowrap px-4 py-1.5 rounded-full bg-surface-container-lowest border border-outline-variant hover:border-primary text-primary font-body-sm text-body-sm shadow-sm transition-all hover:shadow">
-                                What is Schrödinger's cat?
-                            </button>
-<button class="whitespace-nowrap px-4 py-1.5 rounded-full bg-surface-container-lowest border border-outline-variant hover:border-primary text-primary font-body-sm text-body-sm shadow-sm transition-all hover:shadow">
-                                Summarize Chapter 4
-                            </button>
-<button class="whitespace-nowrap px-4 py-1.5 rounded-full bg-surface-container-lowest border border-outline-variant hover:border-primary text-primary font-body-sm text-body-sm shadow-sm transition-all hover:shadow">
-                                Define superposition
-                            </button>
+<div id="suggestions" class="flex gap-2 mb-3 overflow-x-auto custom-scrollbar pb-2 flex-wrap">
+<button class="whitespace-nowrap px-4 py-1.5 rounded-full bg-surface-container-lowest border border-outline-variant hover:border-primary text-primary font-body-sm text-body-sm shadow-sm transition-all hover:shadow" onclick="fillQuestion('Summarize this document')">Summarize</button>
+<button class="whitespace-nowrap px-4 py-1.5 rounded-full bg-surface-container-lowest border border-outline-variant hover:border-primary text-primary font-body-sm text-body-sm shadow-sm transition-all hover:shadow" onclick="fillQuestion('What are the main topics?')">Main topics</button>
+<button class="whitespace-nowrap px-4 py-1.5 rounded-full bg-surface-container-lowest border border-outline-variant hover:border-primary text-primary font-body-sm text-body-sm shadow-sm transition-all hover:shadow" onclick="fillQuestion('Extract key findings')">Key findings</button>
 </div>
 <!-- Input Field -->
 <div class="relative bg-surface-container-lowest rounded-2xl border border-outline-variant shadow-sm focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary transition-all overflow-hidden flex items-end">
-<button class="p-4 text-outline hover:text-primary transition-colors">
-<span class="material-symbols-outlined">attach_file</span>
+<button class="p-4 text-outline hover:text-primary transition-colors" title="Select document">
+<span class="material-symbols-outlined">menu_book</span>
 </button>
-<textarea class="flex-1 bg-transparent border-none focus:ring-0 resize-none py-4 font-body-md text-body-md text-on-surface placeholder-on-surface-variant/50 max-h-32 custom-scrollbar" placeholder="Ask anything about this document..." rows="1" style="min-height: 56px;"></textarea>
-<button class="p-3 m-1 bg-primary text-on-primary rounded-xl hover:bg-surface-tint transition-colors shadow-sm flex items-center justify-center">
+<textarea id="chatInput" class="flex-1 bg-transparent border-none focus:ring-0 resize-none py-4 font-body-md text-body-md text-on-surface placeholder-on-surface-variant/50 max-h-32 custom-scrollbar" placeholder="Ask anything about this document..." rows="1" style="min-height: 56px;"></textarea>
+<button id="sendBtn" class="p-3 m-1 bg-primary text-on-primary rounded-xl hover:bg-surface-tint transition-colors shadow-sm flex items-center justify-center" onclick="sendMessage()">
 <span class="material-symbols-outlined text-sm">send</span>
 </button>
 </div>
@@ -373,4 +322,169 @@
 </section>
 </div>
 </main>
+<script src="js/auth.js"></script>
+<script>
+if (!requireAuth()) {}
+
+let currentDocId = sessionStorage.getItem('documind_chat_doc') ? parseInt(sessionStorage.getItem('documind_chat_doc')) : null;
+let currentDocName = sessionStorage.getItem('documind_chat_doc_name') || '';
+let currentSessionId = null;
+let isLoading = false;
+
+const chatMessages = document.getElementById('chatMessages');
+const chatInput = document.getElementById('chatInput');
+const sendBtn = document.getElementById('sendBtn');
+const emptyState = document.getElementById('emptyState');
+const docTitle = document.getElementById('docTitle');
+const docMeta = document.getElementById('docMeta');
+
+function formatBytes(b) {
+    if (b < 1024 * 1024) return (b / 1024).toFixed(1) + ' KB';
+    return (b / (1024 * 1024)).toFixed(1) + ' MB';
+}
+
+function formatTime() {
+    return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+}
+
+function scrollToBottom() {
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function addMessage(role, text, sources, extraTime) {
+    const time = extraTime || formatTime();
+    const isUser = role === 'user';
+    const html = `<div class="flex gap-4 ${isUser ? 'justify-end' : 'justify-start'}">
+<div class="${isUser ? 'w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center flex-shrink-0' : 'w-8 h-8 rounded-full bg-primary-container flex items-center justify-center flex-shrink-0 shadow-sm'}">
+<span class="material-symbols-outlined ${isUser ? 'text-primary text-sm' : 'text-on-primary text-sm'}">${isUser ? 'person' : 'smart_toy'}</span>
+</div>
+<div class="max-w-[85%] md:max-w-[75%]">
+<div class="${isUser ? 'user-message-bg' : 'ai-message-gradient'} p-5 rounded-2xl ${isUser ? 'rounded-tr-sm' : 'rounded-tl-sm'} shadow-sm backdrop-blur-sm">
+<p class="font-body-md text-body-md text-on-surface leading-relaxed whitespace-pre-wrap">${escapeHtml(text)}</p>${sources && sources.length ? `
+<div class="mt-4 flex flex-col gap-2">${sources.map((s, i) => `<div class="bg-surface-container-lowest border border-outline-variant/40 rounded-xl p-3 flex gap-3 items-start shadow-sm hover:shadow-md transition-shadow">
+<div class="bg-primary-container/10 p-2 rounded-lg text-primary shrink-0">
+<span class="material-symbols-outlined text-sm">find_in_page</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface">Source ${i + 1}</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2 mt-1">${escapeHtml(s.text || s.page || JSON.stringify(s))}</p>
+</div>
+</div>`).join('')}</div>` : ''}
+</div>
+${!isUser ? `<div class="flex gap-2 mt-2 ml-1">
+<button class="text-on-surface-variant/60 hover:text-primary transition-colors p-1" title="Copy" onclick="navigator.clipboard.writeText(this.closest('.flex').querySelector('p').textContent)"><span class="material-symbols-outlined text-[18px]">content_copy</span></button>
+</div>` : ''}
+</div>
+<span class="text-[11px] text-on-surface-variant/60 block ${isUser ? 'text-right' : ''} mt-1">${time}</span>
+</div>`;
+    chatMessages.insertAdjacentHTML('beforeend', html);
+    scrollToBottom();
+}
+
+function escapeHtml(t) {
+    const d = document.createElement('div');
+    d.textContent = t;
+    return d.innerHTML;
+}
+
+function addTypingIndicator() {
+    const id = 'typing-indicator';
+    if (document.getElementById(id)) return;
+    chatMessages.insertAdjacentHTML('beforeend', `<div id="${id}" class="flex gap-4 justify-start">
+<div class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center flex-shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-on-primary text-sm">smart_toy</span>
+</div>
+<div class="max-w-[60%]">
+<div class="ai-message-gradient p-4 rounded-2xl rounded-tl-sm shadow-sm">
+<div class="flex gap-1">
+<div class="w-2 h-2 bg-primary rounded-full animate-bounce" style="animation-delay:0ms"></div>
+<div class="w-2 h-2 bg-primary rounded-full animate-bounce" style="animation-delay:200ms"></div>
+<div class="w-2 h-2 bg-primary rounded-full animate-bounce" style="animation-delay:400ms"></div>
+</div>
+</div>
+</div>
+</div>`);
+    scrollToBottom();
+}
+
+function removeTypingIndicator() {
+    const el = document.getElementById('typing-indicator');
+    if (el) el.remove();
+}
+
+async function sendMessage() {
+    if (isLoading) return;
+    const text = chatInput.value.trim();
+    if (!text) return;
+    if (!currentDocId) {
+        showToast('Please select a document from upload page first', 'warning');
+        return;
+    }
+
+    if (emptyState) emptyState.classList.add('hidden');
+
+    isLoading = true;
+    sendBtn.disabled = true;
+    chatInput.value = '';
+    chatInput.style.height = 'auto';
+    addMessage('user', text);
+    addTypingIndicator();
+
+    try {
+        const data = await apiFetch('/chat/ask', {
+            method: 'POST',
+            body: JSON.stringify({ document_id: currentDocId, question: text, session_id: currentSessionId })
+        });
+        removeTypingIndicator();
+        if (data) {
+            currentSessionId = data.session_id;
+            addMessage('assistant', data.answer, data.sources);
+        }
+    } catch(e) {
+        removeTypingIndicator();
+        addMessage('assistant', 'Sorry, I encountered an error: ' + e.message, null);
+    } finally {
+        isLoading = false;
+        sendBtn.disabled = false;
+        chatInput.focus();
+    }
+}
+
+chatInput.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+    }
+});
+chatInput.addEventListener('input', function() {
+    this.style.height = 'auto';
+    this.style.height = Math.min(this.scrollHeight, 128) + 'px';
+});
+
+function fillQuestion(q) {
+    if (!currentDocId) {
+        showToast('Please select a document from upload page first', 'warning');
+        return;
+    }
+    chatInput.value = q;
+    chatInput.focus();
+}
+
+async function loadDocInfo() {
+    if (!currentDocId) return;
+    try {
+        const doc = await apiFetch('/documents/' + currentDocId);
+        if (doc) {
+            currentDocName = doc.file_name;
+            docTitle.innerHTML = `<span class="material-symbols-outlined text-primary mt-1">menu_book</span>${doc.file_name}`;
+            document.getElementById('docPages').textContent = `${doc.total_pages} pages • ${formatBytes(doc.file_size)}`;
+            sessionStorage.setItem('documind_chat_doc_name', doc.file_name);
+        }
+    } catch(e) {}
+}
+
+if (currentDocId) {
+    loadDocInfo();
+}
+</script>
 </body></html>
