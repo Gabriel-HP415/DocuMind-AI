@@ -37,6 +37,8 @@ services:
       DB_PASSWORD: documind
       DB_NAME: documind_ai
       OLLAMA_BASE_URL: http://ollama:11434
+      OLLAMA_MODEL: llama3.2:3b
+      OLLAMA_NUM_CTX: "2048"
     volumes:
       - ./backend/uploads:/app/uploads
       - ./backend/faiss_index:/app/faiss_index
@@ -77,7 +79,7 @@ services:
     depends_on:
       - ollama
     entrypoint: ["ollama"]
-    command: ["pull", "llama3"]
+    command: ["pull", "llama3.2:3b"]
     restart: "no"
     networks:
       - default

@@ -56,9 +56,9 @@ class Settings(BaseSettings):
 
     # LLM / Ollama
     OLLAMA_BASE_URL: str = "http://localhost:11434"
-    OLLAMA_MODEL: str = "llama3"
+    OLLAMA_MODEL: str = "llama3.2:3b"
     OLLAMA_TEMPERATURE: float = 0.1
-    OLLAMA_NUM_CTX: int = 8192
+    OLLAMA_NUM_CTX: int = 1024
 
     # Embedding
     OLLAMA_EMBEDDING_MODEL: str = "nomic-embed-text"

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import logging
 import os
 from pathlib import Path
 from typing import List, Tuple
@@ -10,6 +11,8 @@ import numpy as np
 
 from app.core.config import settings
 from app.services.vector_store.embedder import embed_texts
+
+logger = logging.getLogger(__name__)
 
 
 class FaissStore:
@@ -38,16 +41,26 @@ class FaissStore:
             json.dump({"texts": self._texts}, f, ensure_ascii=False)
 
     def add_texts(self, texts: list[str]) -> None:
+        logger.info(f"add_texts called with {len(texts)} texts for doc {self.document_id}")
+        if not texts:
+            logger.warning("No texts provided to add_texts")
+            return
         embeddings = embed_texts(texts)
+        logger.info(f"Generated {len(embeddings) if embeddings else 0} embeddings")
         if not embeddings:
+            logger.error("embed_texts returned empty result")
             return
         vectors = np.array(embeddings, dtype="float32")
+        logger.info(f"Vector shape: {vectors.shape}")
         if self._index is None:
             dim = vectors.shape[1]
+            logger.info(f"Creating new FAISS index with dimension {dim}")
             self._index = faiss.IndexFlatIP(dim)
         self._index.add(vectors)
         self._texts.extend(texts)
+        logger.info(f"Calling _persist for doc {self.document_id}")
         self._persist()
+        logger.info(f"FAISS index saved to {self.index_path}")
 
     def search(self, query: str, top_k: int = 4) -> List[Tuple[str, float]]:
         if self._index is None or self._index.ntotal == 0:

@@ -328,7 +328,7 @@ if (!requireAuth()) {}
 
 let currentDocId = sessionStorage.getItem('documind_chat_doc') ? parseInt(sessionStorage.getItem('documind_chat_doc')) : null;
 let currentDocName = sessionStorage.getItem('documind_chat_doc_name') || '';
-let currentSessionId = null;
+let currentSessionId = sessionStorage.getItem('documind_chat_session') ? parseInt(sessionStorage.getItem('documind_chat_session')) : null;
 let isLoading = false;
 
 const chatMessages = document.getElementById('chatMessages');
@@ -438,6 +438,7 @@ async function sendMessage() {
         removeTypingIndicator();
         if (data) {
             currentSessionId = data.session_id;
+            sessionStorage.setItem('documind_chat_session', data.session_id);
             addMessage('assistant', data.answer, data.sources);
         }
     } catch(e) {

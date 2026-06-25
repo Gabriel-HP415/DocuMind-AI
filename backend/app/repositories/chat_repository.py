@@ -53,3 +53,11 @@ class ChatRepository:
         await self.db.flush()
         await self.db.refresh(message)
         return message
+
+    async def delete_session(self, session_id: int) -> bool:
+        session = await self.get_session(session_id)
+        if session is None:
+            return False
+        await self.db.delete(session)
+        await self.db.flush()
+        return True

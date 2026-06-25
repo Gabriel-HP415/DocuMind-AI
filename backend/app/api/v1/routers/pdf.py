@@ -22,8 +22,50 @@ from app.services.pdf_processor import (
     save_upload_file,
 )
 from app.services.vector_store import FaissStore
+from app.repositories.pdf_repository import PdfRepository
+from sqlalchemy.ext.asyncio import AsyncSession
+from concurrent.futures import ThreadPoolExecutor
+import threading
 
 router = APIRouter(prefix="/documents", tags=["pdf"])
+
+# Thread pool for background indexing
+_executor = ThreadPoolExecutor(max_workers=2)
+
+
+def _index_document(doc_id: int, file_path: str, pages: list[str], faiss_index_path: str, db_url: str):
+    """Background task to index document into FAISS."""
+    import logging
+    from sqlalchemy import create_engine
+    from sqlalchemy.orm import sessionmaker
+    from app.models.pdf_document import PdfDocument
+    
+    logger = logging.getLogger(__name__)
+    
+    try:
+        # Index to FAISS
+        from app.core.config import settings
+        chunks = chunk_pages(pages)
+        faiss_store = FaissStore(settings.FAISS_INDEX_DIR, doc_id)
+        faiss_store.add_texts(chunks)
+        
+        # Update document status using sync DB connection
+        engine = create_engine(db_url.replace('mysql+aiomysql', 'mysql+pymysql'))
+        SessionLocal = sessionmaker(bind=engine)
+        db = SessionLocal()
+        try:
+            doc = db.query(PdfDocument).filter(PdfDocument.id == doc_id).first()
+            if doc:
+                doc.is_indexed = True
+                doc.chunk_count = len(chunks)
+                doc.faiss_index_path = faiss_index_path
+                db.commit()
+                logger.info(f"Document {doc_id} indexed successfully with {len(chunks)} chunks")
+        finally:
+            db.close()
+            engine.dispose()
+    except Exception as e:
+        logger.error(f"Failed to index document {doc_id}: {e}")
 
 
 def _build_pdf_document_create(
@@ -77,15 +119,14 @@ async def upload_pdf(
         doc = PdfDocument(**doc_create.model_dump())
         document = await repo.create(doc)
 
-        chunks = chunk_pages(pages)
-        faiss_store = FaissStore(settings.FAISS_INDEX_DIR, document.id)
-        faiss_store.add_texts(chunks)
+        # Submit background indexing task
+        faiss_index_path = str(settings.FAISS_INDEX_DIR / f"doc_{document.id}.index")
+        _executor.submit(_index_document, document.id, dest_path, pages, faiss_index_path, settings.database_url)
 
-        document.is_indexed = True
-        document.chunk_count = len(chunks)
-        document.faiss_index_path = str(settings.FAISS_INDEX_DIR / f"doc_{document.id}.index")
-        await repo.update(document)
-
+        # Return immediately with is_indexed=False
+        document.is_indexed = False
+        document.chunk_count = 0
+        document.faiss_index_path = faiss_index_path
         return PdfDocumentOut.model_validate(document)
     except Exception as exc:
         # cleanup on failure
@@ -166,7 +207,8 @@ async def delete_document(
     try:
         store = FaissStore(settings.FAISS_INDEX_DIR, document_id)
         store.delete()
-    except Exception:
-        pass
+    except Exception as e:
+        import logging
+        logging.warning(f"Failed to delete FAISS index for document {document_id}: {e}")
 
     await repo.delete(document_id)

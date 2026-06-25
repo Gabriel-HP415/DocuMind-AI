@@ -9,6 +9,7 @@ from app.core.config import settings
 from app.db.session import get_db
 from app.middleware.jwt import get_current_user
 from app.models.chat_message import ChatMessage
+from app.models.chat_session import ChatSession
 from app.models.user import User
 from app.repositories.chat_repository import ChatRepository
 from app.repositories.pdf_repository import PdfRepository
@@ -47,7 +48,17 @@ async def ask(
         )
 
     session_id = payload.session_id
-    if session_id is None:
+    session = None
+    if session_id is not None:
+        session = await chat_repo.get_session(session_id)
+        if session is None or session.user_id != current_user.id:
+            session = None  # Tạo session mới
+        elif session.document_id != doc.id:
+            # Document khác → tạo session mới, xóa session cũ
+            await chat_repo.delete_session(session_id)
+            session = None
+
+    if session is None:
         session = await chat_repo.create_session(
             ChatSession(
                 user_id=current_user.id,
@@ -55,14 +66,7 @@ async def ask(
                 title=payload.question[:80],
             )
         )
-        session_id = session.id
-    else:
-        session = await chat_repo.get_session(session_id)
-        if session is None or session.user_id != current_user.id:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Chat session not found",
-            )
+    session_id = session.id
 
     await chat_repo.add_message(
         ChatMessage(
@@ -128,3 +132,19 @@ async def list_sessions(
     chat_repo = ChatRepository(db)
     sessions = await chat_repo.list_sessions_by_user(current_user.id)
     return [ChatSessionOut.model_validate(s) for s in sessions]
+
+
+@router.delete("/sessions/{session_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_session(
+    session_id: int,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> None:
+    chat_repo = ChatRepository(db)
+    session = await chat_repo.get_session(session_id)
+    if session is None or session.user_id != current_user.id:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Chat session not found",
+        )
+    await chat_repo.delete_session(session_id)
