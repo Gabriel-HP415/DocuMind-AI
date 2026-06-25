@@ -1,0 +1,33 @@
+# Firebase credentials - NEVER commit these
+firebase-service-account.json
+*.firebase.json
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+.env
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project specific
+backend/uploads/
+backend/faiss_index/
+*.log
+
+# Node
+node_modules/
+npm-debug.log
