@@ -226,19 +226,21 @@
 <span class="font-label-md text-label-md">My Documents</span>
 </a>
 </li>
-<li>
-<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-primary dark:text-inverse-primary font-bold bg-primary-container/20 dark:bg-primary-container/40 Active: scale-95 transition-transform duration-150" href="#">
-<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">history</span>
-<span class="font-label-md text-label-md">Chat History</span>
-</a>
-</li>
-<li>
-<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant dark:text-surface-variant hover:text-primary hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors" href="#">
-<span class="material-symbols-outlined">settings</span>
-<span class="font-label-md text-label-md">Settings</span>
-</a>
-</li>
 </ul>
+
+<!-- Chat History Panel -->
+<div class="border-t border-outline-variant/30 pt-4 mb-4 max-h-[40vh] overflow-y-auto custom-scrollbar">
+<div class="flex items-center justify-between px-4 mb-2">
+<h3 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Lịch sử chat</h3>
+<button onclick="loadChatSessions()" title="Làm mới" class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[18px]">refresh</span>
+</button>
+</div>
+<div id="chatHistoryList" class="flex flex-col gap-1 px-2">
+<div class="text-on-surface-variant/60 text-xs italic px-2 py-2">Đang tải...</div>
+</div>
+</div>
+
 <div class="mt-auto border-t border-outline-variant/30 pt-4">
 <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant dark:text-surface-variant hover:text-primary hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors" href="#" onclick="logout(); return false;">
 <span class="material-symbols-outlined">logout</span>
@@ -330,6 +332,7 @@ let currentDocId = sessionStorage.getItem('documind_chat_doc') ? parseInt(sessio
 let currentDocName = sessionStorage.getItem('documind_chat_doc_name') || '';
 let currentSessionId = sessionStorage.getItem('documind_chat_session') ? parseInt(sessionStorage.getItem('documind_chat_session')) : null;
 let isLoading = false;
+let shouldAutoScroll = true;
 
 const chatMessages = document.getElementById('chatMessages');
 const chatInput = document.getElementById('chatInput');
@@ -347,15 +350,32 @@ function formatTime() {
     return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 }
 
-function scrollToBottom() {
-    chatMessages.scrollTop = chatMessages.scrollHeight;
+function scrollToBottom(force) {
+    if (force || shouldAutoScroll) {
+        requestAnimationFrame(() => {
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        });
+    }
+}
+
+// Detect user scroll - disable auto-scroll if user scrolls up
+chatMessages.addEventListener('scroll', () => {
+    const atBottom = chatMessages.scrollHeight - chatMessages.scrollTop - chatMessages.clientHeight < 80;
+    shouldAutoScroll = atBottom;
+});
+
+function escapeHtml(t) {
+    const d = document.createElement('div');
+    d.textContent = t;
+    return d.innerHTML;
 }
 
 function addMessage(role, text, sources, extraTime) {
     const time = extraTime || formatTime();
     const isUser = role === 'user';
-    const html = `<div class="flex gap-4 ${isUser ? 'justify-end' : 'justify-start'}">
-<div class="${isUser ? 'w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center flex-shrink-0' : 'w-8 h-8 rounded-full bg-primary-container flex items-center justify-center flex-shrink-0 shadow-sm'}">
+    const wrapper = document.createElement('div');
+    wrapper.className = `flex gap-4 ${isUser ? 'justify-end' : 'justify-start'}`;
+    wrapper.innerHTML = `<div class="${isUser ? 'w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center flex-shrink-0' : 'w-8 h-8 rounded-full bg-primary-container flex items-center justify-center flex-shrink-0 shadow-sm'}">
 <span class="material-symbols-outlined ${isUser ? 'text-primary text-sm' : 'text-on-primary text-sm'}">${isUser ? 'person' : 'smart_toy'}</span>
 </div>
 <div class="max-w-[85%] md:max-w-[75%]">
@@ -372,26 +392,22 @@ function addMessage(role, text, sources, extraTime) {
 </div>`).join('')}</div>` : ''}
 </div>
 ${!isUser ? `<div class="flex gap-2 mt-2 ml-1">
-<button class="text-on-surface-variant/60 hover:text-primary transition-colors p-1" title="Copy" onclick="navigator.clipboard.writeText(this.closest('.flex').querySelector('p').textContent)"><span class="material-symbols-outlined text-[18px]">content_copy</span></button>
+<button class="text-on-surface-variant/60 hover:text-primary transition-colors p-1" title="Copy" onclick="navigator.clipboard.writeText(this.parentElement.previousElementSibling.querySelector('p').textContent)"><span class="material-symbols-outlined text-[18px]">content_copy</span></button>
 </div>` : ''}
 </div>
-<span class="text-[11px] text-on-surface-variant/60 block ${isUser ? 'text-right' : ''} mt-1">${time}</span>
-</div>`;
-    chatMessages.insertAdjacentHTML('beforeend', html);
+<span class="text-[11px] text-on-surface-variant/60 block ${isUser ? 'text-right' : ''} mt-1">${time}</span>`;
+    chatMessages.appendChild(wrapper);
     scrollToBottom();
-}
-
-function escapeHtml(t) {
-    const d = document.createElement('div');
-    d.textContent = t;
-    return d.innerHTML;
+    return wrapper;
 }
 
 function addTypingIndicator() {
     const id = 'typing-indicator';
     if (document.getElementById(id)) return;
-    chatMessages.insertAdjacentHTML('beforeend', `<div id="${id}" class="flex gap-4 justify-start">
-<div class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center flex-shrink-0 shadow-sm">
+    const wrapper = document.createElement('div');
+    wrapper.id = id;
+    wrapper.className = 'flex gap-4 justify-start';
+    wrapper.innerHTML = `<div class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center flex-shrink-0 shadow-sm">
 <span class="material-symbols-outlined text-on-primary text-sm">smart_toy</span>
 </div>
 <div class="max-w-[60%]">
@@ -402,8 +418,8 @@ function addTypingIndicator() {
 <div class="w-2 h-2 bg-primary rounded-full animate-bounce" style="animation-delay:400ms"></div>
 </div>
 </div>
-</div>
-</div>`);
+</div>`;
+    chatMessages.appendChild(wrapper);
     scrollToBottom();
 }
 
@@ -417,7 +433,7 @@ async function sendMessage() {
     const text = chatInput.value.trim();
     if (!text) return;
     if (!currentDocId) {
-        showToast('Please select a document from upload page first', 'warning');
+        showToast('Vui lòng chọn tài liệu trước', 'warning');
         return;
     }
 
@@ -425,6 +441,7 @@ async function sendMessage() {
 
     isLoading = true;
     sendBtn.disabled = true;
+    shouldAutoScroll = true; // Force scroll when sending new message
     chatInput.value = '';
     chatInput.style.height = 'auto';
     addMessage('user', text);
@@ -466,7 +483,6 @@ async function sendMessage() {
                         if (data.chunk) {
                             fullAnswer += data.chunk;
                             if (!assistantMsg) {
-                                // Create message element
                                 assistantMsg = document.createElement('div');
                                 assistantMsg.className = 'flex gap-4 justify-start';
                                 assistantMsg.innerHTML = `
@@ -477,9 +493,14 @@ async function sendMessage() {
                                         <div class="ai-message-gradient p-5 rounded-2xl rounded-tl-sm shadow-sm backdrop-blur-sm">
                                             <p class="font-body-md text-body-md text-on-surface leading-relaxed whitespace-pre-wrap"></p>
                                         </div>
+                                        <div class="flex gap-2 mt-2 ml-1">
+                                            <button class="text-on-surface-variant/60 hover:text-primary transition-colors p-1" title="Copy" onclick="navigator.clipboard.writeText(this.parentElement.previousElementSibling.querySelector('p').textContent)">
+                                                <span class="material-symbols-outlined text-[18px]">content_copy</span>
+                                            </button>
+                                        </div>
                                         <span class="text-[11px] text-on-surface-variant/60 block text-left mt-1">${formatTime()}</span>
                                     </div>`;
-                                chatMessages.insertBefore(assistantMsg, document.getElementById('typing-indicator') || null);
+                                chatMessages.appendChild(assistantMsg);
                             }
                             assistantMsg.querySelector('p').textContent = fullAnswer;
                             scrollToBottom();
@@ -487,17 +508,23 @@ async function sendMessage() {
                         if (data.session_id) {
                             currentSessionId = data.session_id;
                             sessionStorage.setItem('documind_chat_session', data.session_id);
+                            // Reload history list
+                            setTimeout(loadChatSessions, 500);
                         }
                         if (data.error) {
                             throw new Error(data.error);
                         }
-                    } catch (e) {}
+                    } catch (e) {
+                        if (e.message && e.message !== 'Unexpected end of JSON input') {
+                            console.error('Parse error:', e);
+                        }
+                    }
                 }
             }
         }
     } catch(e) {
         removeTypingIndicator();
-        addMessage('assistant', 'Sorry, I encountered an error: ' + e.message, null);
+        addMessage('assistant', 'Lỗi: ' + e.message, null);
     } finally {
         isLoading = false;
         sendBtn.disabled = false;
@@ -518,7 +545,7 @@ chatInput.addEventListener('input', function() {
 
 function fillQuestion(q) {
     if (!currentDocId) {
-        showToast('Please select a document from upload page first', 'warning');
+        showToast('Vui lòng chọn tài liệu trước', 'warning');
         return;
     }
     chatInput.value = q;
@@ -531,15 +558,81 @@ async function loadDocInfo() {
         const doc = await apiFetch('/documents/' + currentDocId);
         if (doc) {
             currentDocName = doc.file_name;
-            docTitle.innerHTML = `<span class="material-symbols-outlined text-primary mt-1">menu_book</span>${doc.file_name}`;
-            document.getElementById('docPages').textContent = `${doc.total_pages} pages • ${formatBytes(doc.file_size)}`;
+            docTitle.innerHTML = `<span class="material-symbols-outlined text-primary mt-1">menu_book</span>${escapeHtml(doc.file_name)}`;
+            document.getElementById('docPages').textContent = `${doc.total_pages} trang • ${formatBytes(doc.file_size)}`;
             sessionStorage.setItem('documind_chat_doc_name', doc.file_name);
         }
     } catch(e) {}
 }
 
+async function loadChatSessions() {
+    const list = document.getElementById('chatHistoryList');
+    if (!list) return;
+    try {
+        const sessions = await apiFetch('/chat/sessions');
+        if (!sessions || !sessions.length) {
+            list.innerHTML = '<div class="text-on-surface-variant/60 text-xs italic px-2 py-2">Chưa có lịch sử</div>';
+            return;
+        }
+        list.innerHTML = sessions.map(s => `
+            <div class="group flex items-center gap-1 px-2 py-2 rounded-lg hover:bg-surface-container-highest cursor-pointer ${s.id === currentSessionId ? 'bg-primary-container/20' : ''}" onclick="loadSession(${s.id})">
+                <span class="material-symbols-outlined text-[16px] text-primary shrink-0">chat_bubble</span>
+                <span class="flex-1 text-xs truncate text-on-surface" title="${escapeHtml(s.title || '')}">${escapeHtml(s.title || 'Chat')}</span>
+                <button onclick="event.stopPropagation(); deleteSession(${s.id})" title="Xóa" class="opacity-0 group-hover:opacity-100 text-on-surface-variant hover:text-error transition-all p-0.5">
+                    <span class="material-symbols-outlined text-[16px]">delete</span>
+                </button>
+            </div>
+        `).join('');
+    } catch(e) {
+        list.innerHTML = '<div class="text-error text-xs px-2 py-2">Lỗi tải lịch sử</div>';
+    }
+}
+
+async function loadSession(sessionId) {
+    currentSessionId = sessionId;
+    sessionStorage.setItem('documind_chat_session', sessionId);
+    chatMessages.innerHTML = '';
+    if (emptyState) emptyState.classList.add('hidden');
+    shouldAutoScroll = true;
+
+    try {
+        const messages = await apiFetch('/chat/history/' + sessionId);
+        if (messages && messages.length) {
+            messages.forEach(msg => {
+                const sources = msg.meta && msg.meta.sources ? msg.meta.sources : null;
+                addMessage(msg.sender, msg.message, sources, new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+            });
+        }
+    } catch(e) {
+        showToast('Lỗi tải tin nhắn', 'error');
+    }
+    loadChatSessions();
+}
+
+async function deleteSession(sessionId) {
+    if (!confirm('Xóa cuộc trò chuyện này?')) return;
+    try {
+        await apiFetch('/chat/sessions/' + sessionId, { method: 'DELETE' });
+        if (currentSessionId === sessionId) {
+            currentSessionId = null;
+            sessionStorage.removeItem('documind_chat_session');
+            chatMessages.innerHTML = '';
+            if (emptyState) emptyState.classList.remove('hidden');
+        }
+        loadChatSessions();
+        showToast('Đã xóa', 'success');
+    } catch(e) {
+        showToast('Lỗi khi xóa', 'error');
+    }
+}
+
+// Init
+loadChatSessions();
 if (currentDocId) {
     loadDocInfo();
+    if (currentSessionId) {
+        loadSession(currentSessionId);
+    }
 }
 </script>
 </body></html>

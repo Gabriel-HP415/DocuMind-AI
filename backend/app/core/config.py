@@ -64,7 +64,7 @@ class Settings(BaseSettings):
     OLLAMA_EMBEDDING_MODEL: str = "nomic-embed-text"
     CHUNK_SIZE: int = 750
     CHUNK_OVERLAP: int = 150
-    TOP_K: int = 4
+    TOP_K: int = 6
 
     # Pagination
     DEFAULT_PAGE_SIZE: int = 20
